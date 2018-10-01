@@ -1,1 +1,5 @@
-//Implement PageRank algorithm for indexing search results
+Given a text file with a list of URLs, recursively visit the URLS, parse their contents for words and make a word list. Store the word list and document IDs of the URLs in an inverted index. 
+
+'crawler.py' recursively traverses all URLs in "urls.txt" and produces an inverted index
+
+'pagerank.py' uses Google's PageRank algorithm to sort webpages
