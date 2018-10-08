@@ -46,9 +46,9 @@ class crawler(object):
         """Initialize the crawler with a connection to the database to populate
         and with the file containing the list of seed URLs to begin indexing."""
         self._url_queue = [ ]
-        self._doc_id_cache = { }
-        self._word_id_cache = { }
-
+        self._doc_id_cache = { }    #Document Index - Dictionary
+        self._word_id_cache = { }   #Lexicon Table - Dictionary
+        
         # functions to call when entering and exiting specific tags
         self._enter = defaultdict(lambda *a, **ka: self._visit_ignore)
         self._exit = defaultdict(lambda *a, **ka: self._visit_ignore)
@@ -111,6 +111,9 @@ class crawler(object):
         self._curr_doc_id = 0
         self._font_size = 0
         self._curr_words = None
+
+        self._inverted_index = defaultdict(set)
+        self._resolved_inverted_index = defaultdict(set)
 
         # get all urls into the queue
         try:
@@ -211,6 +214,7 @@ class crawler(object):
         # TODO: knowing self._curr_doc_id and the list of all words and their
         #       font sizes (in self._curr_words), add all the words into the
         #       database for this document
+
         print "    num words="+ str(len(self._curr_words))
 
     def _increase_font_factor(self, factor):
@@ -232,7 +236,9 @@ class crawler(object):
             if word in self._ignored_words:
                 continue
             self._curr_words.append((self.word_id(word), self._font_size))
-        
+            self._inverted_index[str(self.word_id(word))].add(self._curr_doc_id)
+            self._resolved_inverted_index[word].add(self._curr_url)
+                    
     def _text_of(self, elem):
         """Get the text inside some element without any tags."""
         if isinstance(elem, Tag):
@@ -243,6 +249,15 @@ class crawler(object):
             return " ".join(text)
         else:
             return elem.string
+
+    def get_inverted_index(self):
+        """Returns the inverted_index"""
+        return dict(self._inverted_index)
+
+
+    def get_resolved_inverted_index(self):
+        """Returns the inverted_index"""
+        return dict(self._resolved_inverted_index)
 
     def _index_document(self, soup):
         """Traverse the document in depth-first order and call functions when entering
@@ -322,6 +337,7 @@ class crawler(object):
                 self._curr_words = [ ]
                 self._index_document(soup)
                 self._add_words_to_document()
+                
                 print "    url="+repr(self._curr_url)
 
             except Exception as e:
@@ -330,6 +346,8 @@ class crawler(object):
             finally:
                 if socket:
                     socket.close()
+        print self.get_inverted_index()
+        print self.get_resolved_inverted_index()
 
 if __name__ == "__main__":
     bot = crawler(None, "urls.txt")
