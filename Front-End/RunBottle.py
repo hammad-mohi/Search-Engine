@@ -13,12 +13,12 @@ def hello():
 def count_words():
     # Get input string from input field and conver to lower case
     inputString = (request.forms.get('keywords')).lower()
+    topWordsTable = ""
 
     # Local dictionary used to store keywords from current search
     worddict = {}
     # If input string is empty, display error message
     if(len(inputString) == 0):
-        # TODO: SHOW ERROR MESSAGE
         return template('Main-Page.html', ResultsTable="", HistoryTable=topWordsTable)
     else:
         '''
