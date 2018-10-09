@@ -214,11 +214,10 @@ class crawler(object):
         # TODO: knowing self._curr_doc_id and the list of all words and their
         #       font sizes (in self._curr_words), add all the words into the
         #       database for this document
-
         print "    num words="+ str(len(self._curr_words))
 
     def _increase_font_factor(self, factor):
-        """Increade/decrease the current font size."""
+        """Increase/decrease the current font size."""
         def increase_it(elem):
             self._font_size += factor
         return increase_it
