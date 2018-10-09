@@ -48,6 +48,9 @@ class crawler(object):
         self._url_queue = [ ]
         self._doc_id_cache = { }
         self._word_id_cache = { }
+        self._forward_index = { }
+        self._inverted_index = { }
+        self._resolved_inverted_index = { }
 
         # functions to call when entering and exiting specific tags
         self._enter = defaultdict(lambda *a, **ka: self._visit_ignore)
@@ -211,10 +214,12 @@ class crawler(object):
         # TODO: knowing self._curr_doc_id and the list of all words and their
         #       font sizes (in self._curr_words), add all the words into the
         #       database for this document
+        self._forward_index[self._curr_doc_id] = self._curr_words
+
         print "    num words="+ str(len(self._curr_words))
 
     def _increase_font_factor(self, factor):
-        """Increade/decrease the current font size."""
+        """Increase/decrease the current font size."""
         def increase_it(elem):
             self._font_size += factor
         return increase_it
