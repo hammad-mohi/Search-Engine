@@ -236,8 +236,8 @@ class crawler(object):
             if word in self._ignored_words:
                 continue
             self._curr_words.append((self.word_id(word), self._font_size))
-            self._inverted_index[str(self.word_id(word))].add(self._curr_doc_id)
-            self._resolved_inverted_index[word].add(self._curr_url)
+            self._inverted_index[str(self.word_id(word)).encode('utf-8')].add(self._curr_doc_id)
+            self._resolved_inverted_index[word.encode('utf-8')].add(self._curr_url)
                     
     def _text_of(self, elem):
         """Get the text inside some element without any tags."""
@@ -249,15 +249,6 @@ class crawler(object):
             return " ".join(text)
         else:
             return elem.string
-
-    def get_inverted_index(self):
-        """Returns the inverted_index"""
-        return dict(self._inverted_index)
-
-
-    def get_resolved_inverted_index(self):
-        """Returns the inverted_index"""
-        return dict(self._resolved_inverted_index)
 
     def _index_document(self, soup):
         """Traverse the document in depth-first order and call functions when entering
@@ -305,7 +296,7 @@ class crawler(object):
             else:
                 self._add_text(tag)
 
-    def crawl(self, depth=2, timeout=3):
+    def crawl(self, depth=0, timeout=3):
         """Crawl the web!"""
         seen = set()
 
@@ -331,7 +322,7 @@ class crawler(object):
                 soup = BeautifulSoup(socket.read())
 
                 self._curr_depth = depth_ + 1
-                self._curr_url = url
+                self._curr_url = url.encode('utf-8')
                 self._curr_doc_id = doc_id
                 self._font_size = 0
                 self._curr_words = [ ]
@@ -346,8 +337,15 @@ class crawler(object):
             finally:
                 if socket:
                     socket.close()
-        print self.get_inverted_index()
-        print self.get_resolved_inverted_index()
+       
+    def get_inverted_index(self):
+        """Returns the inverted_index"""
+        return dict(self._inverted_index)
+
+
+    def get_resolved_inverted_index(self):
+        """Returns the resolved inverted_index"""
+        return dict(self._resolved_inverted_index)
 
 if __name__ == "__main__":
     bot = crawler(None, "urls.txt")
