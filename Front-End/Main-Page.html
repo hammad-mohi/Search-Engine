@@ -8,21 +8,40 @@
       div{
         width: 40%;
       }
+      div.scroll{
+        float: center;
+        text-align: center;
+        max-height: 500px;
+        width: 100%;
+        overflow-y: scroll;
+      }
+      html{
+        background: url(https://i2.wp.com/www.speroresearch.com/wp-content/uploads/2017/09/Savin-NY-Website-Background-Web.jpg) no-repeat center center fixed;
+        -webkit-background-size: cover;
+        -moz-background-size: cover;
+        -o-background-size: cover;
+      }
     </style>
   </head>
   <body>
-    <h1 class="text-success"> Google</h1>
-    <form class="form-inline" action="/" method="POST" >
-        <input type="text" class="form-control" id="searchQuery" placeholder="Search Here!" size = "40" name="keywords">
-      <button type="submit" class="btn btn-primary">Search</button>
-    </form>
+    <h1 class="text-success" align="center"> Seek</h1>
+    <div class="d-flex justify-content-center align-items-center container ">
+      <form class="form-inline" action="/" method="POST">
+          <input type="text" class="form-control" id="searchQuery" placeholder="Search Here!" size = "40" name="keywords" align="center">
+        <button type="submit" class="btn btn-primary" align="center">Search</button>
+      </form>
+    </div>
     <div style="float:left">
-      <h4> Results</h4>
-      {{!ResultsTable}}
+      <h4 style="text-align:center"> Results</h4>
+      <div class=scroll>
+        {{!ResultsTable}}
+      </div>
     </div>
     <div style="float:right">
-      <h4> History</h4>
-      {{!HistoryTable}}
+      <h4 style="text-align:center"> History</h4>
+      <div class=scroll>
+        {{!HistoryTable}}
+      </div>
     </div>
   </body>
 </html>
