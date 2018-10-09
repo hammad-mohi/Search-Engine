@@ -19,7 +19,7 @@ def count_words():
     # If input string is empty, display error message
     if(len(inputString) == 0):
         # TODO: SHOW ERROR MESSAGE
-        return template('Main-page.html', ResultsTable="", HistoryTable="")
+        return template('Main-page.html', ResultsTable="", HistoryTable="", root='./')
     else:
         '''
             Go through every word in the input string and check if it exists
