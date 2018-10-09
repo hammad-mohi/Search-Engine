@@ -2,11 +2,11 @@
 <html lang="en" dir="ltr">
   <head>
     <meta charset="utf-8">
-    <title>Google 2.0</title>
+    <title>Seek</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
     <style>
       div{
-        width: 40%;
+        width: 50%;
       }
       div.scroll{
         float: center;
@@ -26,19 +26,19 @@
   <body>
     <h1 class="text-success" align="center"> Seek</h1>
     <div class="d-flex justify-content-center align-items-center container ">
-      <form class="form-inline" action="/" method="POST">
-          <input type="text" class="form-control" id="searchQuery" placeholder="Search Here!" size = "40" name="keywords" align="center">
-        <button type="submit" class="btn btn-primary" align="center">Search</button>
+      <form class="form" action="/" method="POST" align="center">
+          <input type="text" class="form-control" id="searchQuery" placeholder="Search Here!" size = "40" name="keywords">
+        <button type="submit" class="btn btn-primary" >Search</button>
       </form>
     </div>
-    <div style="float:left">
-      <h4 style="text-align:center"> Results</h4>
+    <div style="float:left" align="left">
+      <h4 style="text-align:center" data-toggle="toggle" data-placement="left" title="Search Results"> Results</h4>
       <div class=scroll>
         {{!ResultsTable}}
       </div>
     </div>
     <div style="float:right">
-      <h4 style="text-align:center"> History</h4>
+      <h4 style="text-align:center" data-toggle="toggle" data-placement="left" title="Top 20 Keywords"> History</h4>
       <div class=scroll>
         {{!HistoryTable}}
       </div>

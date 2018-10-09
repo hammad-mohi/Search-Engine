@@ -43,7 +43,8 @@ def count_words():
 # Function used to generate HTML results table
 def create_results_table(word_dict):
     table = '\t<table class="table table-bordered" id="results">\n'
-    for word in word_dict:
+    top_words_sorted = sorted(word_dict, key=word_dict.get, reverse=True)
+    for word in top_words_sorted:
         table+="\t<tr>\n"
         table+="\t<td>" + word + "</td>\n"
         table+="\t<td>" + str(word_dict[word]) + "</td>\n"
