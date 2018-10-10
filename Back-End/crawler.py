@@ -112,9 +112,10 @@ class crawler(object):
         self._font_size = 0
         self._curr_words = None
 
+        # Datastructures
         self._inverted_index = defaultdict(set)
         self._resolved_inverted_index = defaultdict(set)
-
+        
         # get all urls into the queue
         try:
             with open(url_file, 'r') as f:
