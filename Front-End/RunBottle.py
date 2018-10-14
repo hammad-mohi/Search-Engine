@@ -1,7 +1,16 @@
 from bottle import route, run, get, post, request, static_file, template
+from oauth2client.client import flow_from_clientsecrets
+from googleapiclient.errors import HttpError
+from googleapiclient.discovery import build
+import bottle
 
 # Global dictionary used to store all searched keywords
 keywords = {}
+
+@route('<filename:re:.*\.css>', name="static")
+def css(filename):
+    print ("css:" + filename)
+    return static_file(filename, root='./', mimetype='text/css')
 
 # Display main search engine page without showing any tables by default
 @route('/')
@@ -59,5 +68,17 @@ def create_history_table(top_words):
         table+="\t</tr>\n"
     table += "\t</table>"
     return table
+
+
+@route('/sign-in')
+def home():
+    flow = flow_from_clientsecrets("client_secrets.json", scope="https://www.googleapis.com/auth/plus.me",
+                                    redirect_uri="http://localhost:8080/redirect")
+    uri = flow.step1_get_authorize_url()
+    bottle.redirect(str(uri))
+
+@route('/redirect')
+def redirect_page():
+    code = request.query.get('code', '')
 
 run(host='localhost', port=8080, debug=True)
