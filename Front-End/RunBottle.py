@@ -1,11 +1,25 @@
 from bottle import route, run, get, post, request, static_file, template
 from oauth2client.client import flow_from_clientsecrets
+from oauth2client.client import OAuth2WebServerFlow
 from googleapiclient.errors import HttpError
 from googleapiclient.discovery import build
-import bottle
+import httplib2
+import bottle as app
+from beaker.middleware import SessionMiddleware
+
+session_opts={
+    'session.type':'file',
+    'session.cookie_expires': 300,
+    'session.data_dir': './data',
+    'session.auto' : True
+}
+
+app_middleware = SessionMiddleware(app.app(), session_opts)
+app_session = app.request.environ.get('beaker.session')
 
 # Global dictionary used to store all searched keywords
 keywords = {}
+SCOPE = "https://www.googleapis.com/auth/userinfo.email"
 
 @route('<filename:re:.*\.css>', name="static")
 def css(filename):
@@ -15,7 +29,16 @@ def css(filename):
 # Display main search engine page without showing any tables by default
 @route('/')
 def hello():
-  return template('Main-Page.html',ResultsTable="", HistoryTable="" ,root='./')
+    session = app.request.environ.get('beaker.session')
+    if session.get('logged_in'):
+        print ("You are logged in")
+        print(session["id"])
+        email = str(session["email"])
+        string = "<h1>" + email + "</>"
+        return template('Logged-In.html', Email= string, ResultsTable="", HistoryTable = "", root ='./')
+    print("You are not logged in")
+    session.save()
+    return template('Main-Page.html',ResultsTable="", HistoryTable="",root='./')
 
 # Function that gets called when a user hits Submit button
 @route('/', method="POST")
@@ -72,13 +95,52 @@ def create_history_table(top_words):
 
 @route('/sign-in')
 def home():
-    flow = flow_from_clientsecrets("client_secrets.json", scope="https://www.googleapis.com/auth/plus.me",
+    session = app.request.environ.get('beaker.session')
+    flow = flow_from_clientsecrets("client_secrets.json", scope=SCOPE,
                                     redirect_uri="http://localhost:8080/redirect")
     uri = flow.step1_get_authorize_url()
-    bottle.redirect(str(uri))
+    app.redirect(str(uri))
+
+@route('/log-off')
+def logoff():
+    session = app.request.environ.get('beaker.session')
+    session["logged_in"] = False
+    session.save()
+    return template('Main-Page.html',ResultsTable="", HistoryTable = "",root='./')
 
 @route('/redirect')
 def redirect_page():
     code = request.query.get('code', '')
+    flow = OAuth2WebServerFlow(client_id="547443438769-9q9tatcnkpv6g05cj9d9ds98n0q661t1.apps.googleusercontent.com",
+        client_secret="woMB_Z4XCZTyAW_-2hdUNpfx", scope=SCOPE,
+        redirect_uri="http://localhost:8080/redirect")
+    credentials = flow.step2_exchange(code)
+    token= credentials.id_token['sub']
+    print(token)
 
-run(host='localhost', port=8080, debug=True)
+    http = httplib2.Http()
+    http = credentials.authorize(http)
+
+    # Get user email
+    users_service = build('oauth2', 'v2', http=http)
+    user_document = users_service.userinfo().get().execute()
+    print(user_document)
+    user_email = user_document['email']
+    photo = user_document["picture"]
+    session = app.request.environ.get('beaker.session')
+    session["id"] = user_document["id"]
+    session["logged_in"] = True
+    session["email"] = user_email
+    string = "<h1>" + user_email + "</>"
+    #string = "<img src=" + photo + ">"
+    session.save()
+    return template('Logged-in.html', Email = string,  ResultsTable="", HistoryTable="",root='./')
+
+
+run(app=app_middleware, host='localhost', port=8080, debug=True, reoloader = True)
+
+
+'''
+ @Routes
+   - Load page (Check if user is signed in or create a new session)
+               (Return the appropriate page)'''
