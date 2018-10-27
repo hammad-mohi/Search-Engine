@@ -1,12 +1,12 @@
 from bottle import route, run, get, post, request, static_file, template
-from oauth2client.client import flow_from_clientsecrets
-from oauth2client.client import OAuth2WebServerFlow
+from oauth2client.client import flow_from_clientsecrets, OAuth2WebServerFlow
 from googleapiclient.errors import HttpError
 from googleapiclient.discovery import build
 import httplib2
 import bottle as app
 from beaker.middleware import SessionMiddleware
 
+# Beaker session options
 session_opts={
     'session.type':'file',
     'session.cookie_expires': 300,
@@ -38,11 +38,12 @@ def hello():
         return template('Logged-In.html', Email= string, ResultsTable="", HistoryTable = "", root ='./')
     print("You are not logged in")
     session.save()
-    return template('Main-Page.html',ResultsTable="", HistoryTable="",root='./')
+    return template('Main-Page.html',ResultsTable="",root='./')
 
 # Function that gets called when a user hits Submit button
 @route('/', method="POST")
 def count_words():
+    session = app.request.environ.get('beaker.session') 
     # Get input string from input field and conver to lower case
     inputString = (request.forms.get('keywords')).lower()
 
@@ -66,7 +67,7 @@ def count_words():
     table = create_results_table(worddict)
     topWordsTable = create_history_table(keywords)
     # Reload main search page with results and search history tables
-    return template('Main-Page.html', ResultsTable=table, HistoryTable=topWordsTable)
+    return template('Main-Page.html', ResultsTable=table)
 
 # Function used to generate HTML results table
 def create_results_table(word_dict):
@@ -106,7 +107,7 @@ def logoff():
     session = app.request.environ.get('beaker.session')
     session["logged_in"] = False
     session.save()
-    return template('Main-Page.html',ResultsTable="", HistoryTable = "",root='./')
+    return template('Main-Page.html',ResultsTable="",root='./')
 
 @route('/redirect')
 def redirect_page():
@@ -127,6 +128,7 @@ def redirect_page():
     print(user_document)
     user_email = user_document['email']
     photo = user_document["picture"]
+
     session = app.request.environ.get('beaker.session')
     session["id"] = user_document["id"]
     session["logged_in"] = True
@@ -134,7 +136,7 @@ def redirect_page():
     string = "<h1>" + user_email + "</>"
     #string = "<img src=" + photo + ">"
     session.save()
-    return template('Logged-in.html', Email = string,  ResultsTable="", HistoryTable="",root='./')
+    return template('Logged-In.html', Email = string,  ResultsTable="", HistoryTable="",root='./')
 
 
 run(app=app_middleware, host='localhost', port=8080, debug=True, reoloader = True)

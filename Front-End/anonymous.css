@@ -1,0 +1,20 @@
+div{
+  margin: auto;
+  width: 50%;
+  border: 3px;
+  padding: 10px;
+  background: rgba(0,0,0,0);
+}
+div.scroll{
+  float: center;
+  text-align: center;
+  max-height: 500px;
+  width: 100%;
+  overflow-y: scroll;
+}
+body{
+  background: url(https://i2.wp.com/www.speroresearch.com/wp-content/uploads/2017/09/Savin-NY-Website-Background-Web.jpg) no-repeat center center fixed;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+}
