@@ -9,13 +9,15 @@
 </head>
 <body>
 	<button id="sign_in" onclick="location.href='sign-in'">Log In</button>
-	<div class="header">
-		<h1>Seek</h1>	
-	</div>	
-	<form class="form" action="/" method="POST">
-		<input type="search" placeholder="Seek & You Shall Find" class="form-control" id="searchQuery" name="keywords">
-	</form>
 	<div>
+		<div class="header">
+			<h1>Seek</h1>
+		</div>
+		<form class="form" action="/" method="POST">
+			<input type="search" placeholder="Seek & You Shall Find" class="form-control" id="searchQuery" name="keywords">
+		</form>
+	<div>
+	<div style="float: left; width: 30%">
 	    <h4 style="text-align:center" data-toggle="toggle" data-placement="left" title="Search Results"> Results</h4>
     	<div class=scroll>
       		{{!ResultsTable}}
@@ -23,6 +25,6 @@
   	</div>
 
 	<h6>Anonymous Mode</h6>
-	
+
 </body>
 </html>

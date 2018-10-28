@@ -16,7 +16,7 @@ CLIENT_ID = "547443438769-9q9tatcnkpv6g05cj9d9ds98n0q661t1.apps.googleuserconten
 # Beaker session options
 session_opts={
     'session.type':'file',
-    'session.cookie_expires': 10,
+    'session.cookie_expires': 300,
     'session.data_dir': './data',
     'session.auto' : True
 }
@@ -55,7 +55,8 @@ def hello():
         else:
             # Generate user history table code
             userHistory = create_history_table(searchHistory[userID])
-        return template('signed_in.html', Email= string, root ='./')
+        email = "	<h6>Signed In as " + userEmail + "</h6>"
+        return template('signed_in_results.html', HistoryTable = userHistory, ResultsTable = "", Email= email, root ='./')
     print("You are not logged in")
     return template('anonymous.html', root='./')
 
@@ -96,7 +97,8 @@ def count_words():
     # If user is logged in, create user history html table and return logged-in template
     if "logged_in" in request.session and request.session["logged_in"] is True:
         userHistoryTable = create_history_table(searchHistory[userID])
-        return template('signed_in_results.html', ResultsTable=table, HistoryTable = userHistoryTable, Email = str(userEmail))
+        email = "	<h6>Signed In as" + userEmail + "</h6>"
+        return template('signed_in_results.html', ResultsTable=table, HistoryTable = userHistoryTable, Email = email)
     # If user is not logged in, return anonymous mode view
     return template('anonymous_results.html', ResultsTable=table)
 
@@ -135,6 +137,7 @@ def home():
 @route('/log-off')
 def logoff():
     request.session["logged_in"] = False
+    print("logout")
     request.session.delete()
     bottle.redirect("https://www.google.com/accounts/Logout?continue=https://appengine.google.com/_ah/logout?continue=" + HOME)
 

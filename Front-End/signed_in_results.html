@@ -8,10 +8,10 @@
 	<link rel="stylesheet" type="text/css" href="main.css">
 </head>
 <body>
-	<button id="sign_in" onclick="location.href='sign-in'">Log Out</button>
+	<button id="sign_in" onclick="location.href='log-off'">Log Out</button>
 	<div class="header">
-		<h1>Seek</h1>	
-	</div>	
+		<h1>Seek</h1>
+	</div>
 	<form class="form" action="/" method="POST">
 		<input type="search" placeholder="Seek & You Shall Find" class="form-control" id="searchQuery" name="keywords">
 	</form>
@@ -28,8 +28,6 @@
         {{!HistoryTable}}
       </div>
     </div>
-	
-	<h6>Signed In as {{!Email}}</h6>
-
+	{{!Email}}
 </body>
 </html>
