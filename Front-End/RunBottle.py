@@ -71,6 +71,8 @@ def count_words():
     if "id" in request.session:
         userID = request.session["id"]
         userEmail = request.session["email"]
+        print(userEmail)
+        print(request.session["logged_in"])
 
     '''
         Go through every word in the input string and check if it exists
@@ -92,7 +94,7 @@ def count_words():
     table = create_results_table(worddict)
 
     # If user is logged in, create user history html table and return logged-in template
-    if "logged_in" in request.session and request.session["logged_in"] is True and "id" in request.session:
+    if "logged_in" in request.session and request.session["logged_in"] is True:
         userHistoryTable = create_history_table(searchHistory[userID])
         return template('Logged-In.html', ResultsTable=table, HistoryTable = userHistoryTable, Email = str(userEmail))
     # If user is not logged in, return anonymous mode view
@@ -134,7 +136,7 @@ def home():
 def logoff():
     request.session["logged_in"] = False
     request.session.delete()
-    bottle.redirect(HOME)
+    bottle.redirect("https://www.google.com/accounts/Logout?continue=https://appengine.google.com/_ah/logout?continue=" + HOME)
 
 # Google redirects user to this route
 @route('/redirect')
