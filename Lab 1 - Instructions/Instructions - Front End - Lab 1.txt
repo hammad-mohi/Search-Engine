@@ -1,4 +1,0 @@
-Instructions for running front end:
-   1) Go to front-end folder directory in command line
-   2) Type the following command: "python RunBottle.py"
-   3) Open up browser and go to: http://localhost:8080

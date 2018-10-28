@@ -1,7 +1,0 @@
-To test, iterate through all the words in the resolved_inverted_index and cross check the values with the inverted_index.
-For each word in the resolved_inverted_index, acquire the corresponding word_id from the word_id_cache. 
-For each url in the list of urls in the resolved_inverted_index, acquire the document id from the doc_id_cache.
-
-Using the two acquired values, cross check with the inverted_index.
-
-If there are any discrepancies, tester has failed. 

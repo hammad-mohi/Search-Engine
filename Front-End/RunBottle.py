@@ -1,6 +1,6 @@
 import bottle
 import httplib2
-from googleapiclient.discovery import build
+from apiclient.discovery import build
 from googleapiclient.errors import HttpError
 from beaker.middleware import SessionMiddleware
 from bottle import route, run, get, post, request, static_file, template
@@ -16,7 +16,7 @@ CLIENT_ID = "547443438769-9q9tatcnkpv6g05cj9d9ds98n0q661t1.apps.googleuserconten
 # Beaker session options
 session_opts={
     'session.type':'file',
-    'session.cookie_expires': 300,
+    'session.cookie_expires': 10,
     'session.data_dir': './data',
     'session.auto' : True
 }
@@ -49,12 +49,14 @@ def hello():
         string = "<h1>" + str(userEmail) + "</>"
         userHistory = ""
         # Search for user history in searchHistory hash table
-        if userID in searchHistory:
+            # Create history hash map for user if it does not exist
+        if userID not in searchHistory:
+                searchHistory[userID] = {}
+        else:
             # Generate user history table code
             userHistory = create_history_table(searchHistory[userID])
         return template('Logged-In.html', Email= string, ResultsTable="", HistoryTable =userHistory, root ='./')
     print("You are not logged in")
-    request.session.save()
     return template('Main-Page.html',ResultsTable="",root='./')
 
 # Function that gets called when a user hits Submit button
@@ -131,7 +133,6 @@ def home():
 @route('/log-off')
 def logoff():
     request.session["logged_in"] = False
-    request.session.save()
     request.session.delete()
     bottle.redirect(HOME)
 
@@ -161,18 +162,8 @@ def redirect_page():
 
     userID = request.session["id"]
 
-    # Create history hash map for user if it does not exist
-    if userID not in searchHistory:
-        searchHistory[userID] = {}
-    # Create HTML user history table
-    userHistory = create_history_table(searchHistory[userID])
-
-    # Create header/Image to send to html template
-    string = "<h1>" + userEmail + "</>"
-    #string = "<img src=" + photo + ">"
     request.session.save()
-    request.session.persist()
-    return template('Logged-In.html', Email = string,  ResultsTable="", HistoryTable=userHistory,root='./')
+    bottle.redirect(HOME)
 
 
 run(app=app_middleware, host='localhost', port=8080, debug=True, reoloader = True)
