@@ -55,9 +55,9 @@ def hello():
         else:
             # Generate user history table code
             userHistory = create_history_table(searchHistory[userID])
-        return template('Logged-In.html', Email= string, ResultsTable="", HistoryTable =userHistory, root ='./')
+        return template('signed_in.html', Email= string, root ='./')
     print("You are not logged in")
-    return template('Main-Page.html',ResultsTable="",root='./')
+    return template('anonymous.html', root='./')
 
 # Function that gets called when a user hits Submit button
 @route('/', method="POST")
@@ -96,9 +96,9 @@ def count_words():
     # If user is logged in, create user history html table and return logged-in template
     if "logged_in" in request.session and request.session["logged_in"] is True:
         userHistoryTable = create_history_table(searchHistory[userID])
-        return template('Logged-In.html', ResultsTable=table, HistoryTable = userHistoryTable, Email = str(userEmail))
+        return template('signed_in_results.html', ResultsTable=table, HistoryTable = userHistoryTable, Email = str(userEmail))
     # If user is not logged in, return anonymous mode view
-    return template('Main-Page.html', ResultsTable=table)
+    return template('anonymous_results.html', ResultsTable=table)
 
 # Function used to generate HTML results table
 def create_results_table(word_dict):

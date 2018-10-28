@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Seek</title>
+	<link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css" integrity="sha384-5sAR7xN1Nv6T6+dT2mhtzEpVJvfS3NScPQTrOxhwjIuvcA67KV2R5Jz6kr4abQsz" crossorigin="anonymous">
+	<link href="https://fonts.googleapis.com/css?family=Ubuntu:400,500,700" rel="stylesheet">
+	<link rel="stylesheet" type="text/css" href="main.css">
+</head>
+<body>
+	<button id="sign_in" onclick="location.href='sign-in'">Log Out</button>
+	<div class="header">
+		<h1>Seek</h1>	
+	</div>	
+	<form class="form" action="/" method="POST">
+		<input type="search" placeholder="Seek & You Shall Find" class="form-control" id="searchQuery" name="keywords">
+	</form>
+
+	 <div style="float:left" align="left">
+      <h4 style="text-align:center" data-toggle="toggle" data-placement="left" title="Search Results"> Results</h4>
+      <div class=scroll>
+        {{!ResultsTable}}
+      </div>
+    </div>
+    <div style="float:right">
+      <h4 style="text-align:center" data-toggle="toggle" data-placement="left" title="Top 20 Keywords"> History</h4>
+      <div class=scroll>
+        {{!HistoryTable}}
+      </div>
+    </div>
+	
+	<h6>Signed In as {{!Email}}</h6>
+
+</body>
+</html>
