@@ -171,4 +171,4 @@ def redirect_page():
     bottle.redirect(HOME)
 
 
-run(app=app_middleware, host='0.0.0.0', port=80, debug=True, reoloader = True)
+run(app=app_middleware, host='0.0.0.0', port=8080, debug=True, reoloader = True)
