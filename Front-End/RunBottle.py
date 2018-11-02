@@ -56,7 +56,7 @@ def hello():
             # Generate user history table code
             userHistory = create_history_table(searchHistory[userID])
         email = "	<h6>Signed In as " + userEmail + "</h6>"
-        return template('signed_in_results.html', HistoryTable = userHistory, ResultsTable = "", Email= email, root ='./')
+        return template('signed_in.html', HistoryTable = userHistory, ResultsTable = "", Email= email, root ='./')
     print("You are not logged in")
     return template('anonymous.html', root='./')
 
