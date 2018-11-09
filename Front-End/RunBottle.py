@@ -46,7 +46,6 @@ def hello():
         userEmail = request.session["email"]
         print ("You are logged in")
         print(userID)
-        string = "<h1>" + str(userEmail) + "</>"
         userHistory = ""
         # Search for user history in searchHistory hash table
             # Create history hash map for user if it does not exist
@@ -55,8 +54,8 @@ def hello():
         else:
             # Generate user history table code
             userHistory = create_history_table(searchHistory[userID])
-        email = "	<h6>Signed In as " + userEmail + "</h6>"
-        return template('signed_in.html', HistoryTable = userHistory, ResultsTable = "", Email= email, root ='./')
+        email = "<h6>Signed In as " + userEmail + "</h6>"
+        return template('signed_in_results.html', HistoryTable = userHistory, ResultsTable = "", Email= email, root ='./')
     print("You are not logged in")
     return template('anonymous.html', root='./')
 
@@ -97,7 +96,7 @@ def count_words():
     # If user is logged in, create user history html table and return logged-in template
     if "logged_in" in request.session and request.session["logged_in"] is True:
         userHistoryTable = create_history_table(searchHistory[userID])
-        email = "	<h6>Signed In as" + userEmail + "</h6>"
+        email = "<h6>Signed In as " + userEmail + "</h6>"
         return template('signed_in_results.html', ResultsTable=table, HistoryTable = userHistoryTable, Email = email)
     # If user is not logged in, return anonymous mode view
     return template('anonymous_results.html', ResultsTable=table)
