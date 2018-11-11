@@ -1,2 +1,3 @@
-https://www.boost.org/
-https://support.mozilla.org/en-US/products/firefox/basic-browsing-firefox
+http://www.eecg.toronto.edu/
+https://www.google.com
+https://www.bing.ca
