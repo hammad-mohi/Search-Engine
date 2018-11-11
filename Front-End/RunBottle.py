@@ -3,7 +3,7 @@ import httplib2
 from apiclient.discovery import build
 from googleapiclient.errors import HttpError
 from beaker.middleware import SessionMiddleware
-from bottle import route, run, get, post, request, static_file, template
+from bottle import route, run, get, post, request, static_file, template, error
 from oauth2client.client import flow_from_clientsecrets, OAuth2WebServerFlow
 
 # Constants
@@ -35,7 +35,24 @@ def setup_request():
 @route('<filename:re:.*\.css>', name="static")
 def css(filename):
     print ("css:" + filename)
-    return static_file(filename, root='./', mimetype='text/css')
+    return static_file(filename, root='./styles')
+
+# Route used to service .js file requests
+@route('<filename:re:.*\.js>', name="static")
+def js(filename):
+    print ("js:" + filename)
+    return static_file(filename, root='./scripts')
+
+# Route used to service .jpg file requests
+@route('<filename:re:.*\.png>', name="static")
+def png(filename):
+    print ("png:" + filename)
+    return static_file(filename, root='./images')
+
+@route('./error')
+@error(404)
+def error404(error):
+    return template('./views/error.html', root='./')
 
 # Display main search engine page without showing any tables by default
 @route('/')
@@ -55,15 +72,16 @@ def hello():
             # Generate user history table code
             userHistory = create_history_table(searchHistory[userID])
         email = "<h6>Signed In as " + userEmail + "</h6>"
-        return template('signed_in_results.html', HistoryTable = userHistory, ResultsTable = "", Email= email, root ='./')
+        return template('./views/signed_in_results.html', HistoryTable = userHistory, ResultsTable = "", Email= email, root ='./')
     print("You are not logged in")
-    return template('anonymous.html', root='./')
+    return template('./views/anonymous.html', root='./')
 
 # Function that gets called when a user hits Submit button
-@route('/', method="POST")
+@route('/search', method="GET")
 def count_words():
     # Get input string from input field and conver to lower case
-    inputString = (request.forms.get('keywords')).lower()
+    keywords = request.query.keywords
+    inputString = keywords.lower()
 
     # Local dictionary used to store keywords from current search
     worddict = {}
@@ -97,9 +115,9 @@ def count_words():
     if "logged_in" in request.session and request.session["logged_in"] is True:
         userHistoryTable = create_history_table(searchHistory[userID])
         email = "<h6>Signed In as " + userEmail + "</h6>"
-        return template('signed_in_results.html', ResultsTable=table, HistoryTable = userHistoryTable, Email = email)
+        return template('./views/signed_in_results.html', ResultsTable=table, HistoryTable = userHistoryTable, Email = email)
     # If user is not logged in, return anonymous mode view
-    return template('anonymous_results.html', ResultsTable=table)
+    return template('./views/anonymous_results.html', ResultsTable=table, p1 = keywords)
 
 # Function used to generate HTML results table
 def create_results_table(word_dict):
