@@ -224,7 +224,7 @@ class crawler(object):
         self.add_link(self._curr_doc_id, dest_doc_id)
 
         # TODO add title/alt/text to index for destination url
-        #self._document_index[dest_doc_id][0] = dest_url
+        self._document_index[dest_doc_id][0] = dest_url.encode()
         #self._document_index[dest_doc_id][1] = title
     
 

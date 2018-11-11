@@ -1,5 +1,7 @@
 import bottle
 import httplib2
+import redis
+from collections import defaultdict
 from apiclient.discovery import build
 from googleapiclient.errors import HttpError
 from beaker.middleware import SessionMiddleware
@@ -76,12 +78,28 @@ def hello():
     print("You are not logged in")
     return template('./views/anonymous.html', root='./')
 
+def get_search_results(search_key):
+    client = redis.Redis()
+    word_id = client.get('lexicon:' + search_key)
+    docs = []
+    if word_id:        
+        doc_ids = client.get('inverted_index:' + word_id).split(',')
+        for doc_id in doc_ids:
+            doc = []
+            doc.append(client.get('url:' + doc_id))
+            doc.append(client.get('title:' + doc_id))
+            doc.append(client.get('description:' + doc_id))
+            doc.append(client.get('pagerank:' + doc_id))
+
+    docs.sort(key=lambda x: x[3])
+    return docs
+
 # Function that gets called when a user hits Submit button
 @route('/search', method="GET")
 def count_words():
     # Get input string from input field and conver to lower case
     keywords = request.query.keywords
-    inputString = keywords.lower()
+    #inputString = keywords.lower()
 
     # Local dictionary used to store keywords from current search
     worddict = {}
@@ -97,7 +115,11 @@ def count_words():
         in the global searchHistory for the logged-in user dictionary and
         the local search keywords dictionary. If word exits, increment word count.
     '''
-    for word in inputString.split():
+    inputWords = keywords.split()
+    # search_key is the first word
+    search_results = get_search_results(inputWords[0])
+    
+    for word in inputWords:
         if word in worddict:
             worddict[word] += 1
         else:
@@ -110,15 +132,14 @@ def count_words():
                 searchHistory[userID][word] = 1
     # Generate search results html table
     table = create_results_table(worddict)
-
+    
     # If user is logged in, create user history html table and return logged-in template
     if "logged_in" in request.session and request.session["logged_in"] is True:
         userHistoryTable = create_history_table(searchHistory[userID])
         email = "<h6>Signed In as " + userEmail + "</h6>"
         return template('./views/signed_in_results.html', ResultsTable=table, HistoryTable = userHistoryTable, Email = email)
     # If user is not logged in, return anonymous mode view
-    return template('./views/anonymous_results.html', ResultsTable=table, p1 = keywords)
-
+    return template('./views/anonymous_results.html', ResultsTable=table, p1=keywords, search_key=inputWords[0])
 # Function used to generate HTML results table
 def create_results_table(word_dict):
     table = '\t<table class="table table-bordered" id="results">\n'

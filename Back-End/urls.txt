@@ -1,3 +1,5 @@
-http://www.eecg.toronto.edu/
-https://www.google.com
-https://www.bing.ca
+http://www.eecg.toronto.edu
+https://www.ece.utoronto.ca
+https://www.utoronto.ca
+https://www.engineering.utoronto.ca
+

@@ -31,8 +31,4 @@ for doc_id in document_index:
 for doc_id in pagerank:
     rdb.set('pagerank:' + str(doc_id), pagerank[doc_id])
 
-"""for doc_id, rank in sorted(pagerank.iteritems(), key=lambda (k,v): (v,k), reverse=True):
-    document = crawler._document_index[doc_id]
-    print str(doc_id) + "\n" + str(document[1]) + "\n" + str(document[0]) + "\n" + str(document[2]) + "\n= " + str(rank) + "\n"
-    #print document[3]
-"""
+rdb.save()
