@@ -79,19 +79,20 @@ def hello():
     return template('./views/anonymous.html', root='./')
 
 def get_search_results(search_key):
-    client = redis.Redis()
-    word_id = client.get('lexicon:' + search_key)
+    rdb = redis.Redis()
+    word_id = rdb.get('lexicon:' + search_key)
     docs = []
-    if word_id:        
-        doc_ids = client.get('inverted_index:' + word_id).split(',')
+    if word_id:
+        doc_ids = rdb.get('inverted_index:' + word_id).split(',')
         for doc_id in doc_ids:
             doc = []
-            doc.append(client.get('url:' + doc_id))
-            doc.append(client.get('title:' + doc_id))
-            doc.append(client.get('description:' + doc_id))
-            doc.append(client.get('pagerank:' + doc_id))
-
-    docs.sort(key=lambda x: x[3])
+            docID = doc_id.strip()
+            doc.append(rdb.get('url:' + docID))
+            doc.append(rdb.get('title:' + docID))
+            doc.append(rdb.get('description:' + docID))
+            doc.append(rdb.get('pagerank:' + docID))
+            docs.append(doc)
+        docs.sort(key=lambda x: x[3], reverse=True)
     return docs
 
 # Function that gets called when a user hits Submit button
@@ -139,7 +140,7 @@ def count_words():
         email = "<h6>Signed In as " + userEmail + "</h6>"
         return template('./views/signed_in_results.html', ResultsTable=table, HistoryTable = userHistoryTable, Email = email)
     # If user is not logged in, return anonymous mode view
-    return template('./views/anonymous_results.html', ResultsTable=table, p1=keywords, search_key=inputWords[0])
+    return template('./views/anonymous_results.html', ResultsTable=table, p1=keywords, results=search_results)
 # Function used to generate HTML results table
 def create_results_table(word_dict):
     table = '\t<table class="table table-bordered" id="results">\n'

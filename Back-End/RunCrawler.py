@@ -26,7 +26,7 @@ for doc_id in document_index:
     doc = document_index[doc_id]
     rdb.set('url:' + str(doc_id), doc[0])
     rdb.set('title:' + str(doc_id), doc[1])
-    rdb.set('description' + str(doc_id), doc[2])
+    rdb.set('description:' + str(doc_id), doc[2])
     rdb.set('words:' + str(doc_id), doc[3])
 for doc_id in pagerank:
     rdb.set('pagerank:' + str(doc_id), pagerank[doc_id])

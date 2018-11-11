@@ -202,9 +202,7 @@ class crawler(object):
                     break
             
             self._document_index[self._curr_doc_id][2] = content
-            self._description_found = True
-        
-
+                    
     def _visit_a(self, elem):
         """Called when visiting <a> tags."""
 
