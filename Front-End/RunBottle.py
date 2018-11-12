@@ -130,6 +130,9 @@ def count_words():
     else:
         return template('./views/error.html', Error_Message="No results found for entered keyword", root='./')
     
+    if (len(search_results) == 0):
+         return template('./views/error.html', Error_Message="No results found for entered keyword", root='./')       
+    
 
     results = ""
     resultsLen = len(search_results)
