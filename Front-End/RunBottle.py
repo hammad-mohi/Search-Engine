@@ -54,9 +54,13 @@ def png(filename):
     return static_file(filename, root='./images')
 
 @route('./error')
+@error(400)
+@error(401)
+@error(402)
+@error(403)
 @error(404)
 def error404(error):
-    return template('./views/error.html', root='./')
+    return template('./views/error.html', Error_Message="Oops something went wrong", root='./')
 
 # Display main search engine page without showing any tables by default
 @route('/')
@@ -120,12 +124,17 @@ def count_words():
     '''
     inputWords = keywords.split()
     # search_key is the first word
-    search_results = get_search_results(inputWords[0])
+    if (len(keywords) > 0):
+        search_results = get_search_results(inputWords[0])
+    
+    else:
+        return template('./views/error.html', Error_Message="No results found for entered keyword", root='./')
+    
 
     results = ""
     resultsLen = len(search_results)
     for item in search_results:
-        results += "<div class = 'blurred-box' style='max-width: 50rem'>"
+        results += "<div class = 'blurred-box' style='max-width: 55rem'>"
         results += "    <h4 class = 'result-title'> " + item[1] + "</h4>"
         results += "    <a class = 'result-link' href='" + item[0] + "' target='_blank'>" + item[0] + "</a>"
         results += "   <h1 class = 'result-desc'> " + item[2] + "</h1>"

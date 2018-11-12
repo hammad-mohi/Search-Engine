@@ -7,7 +7,6 @@
 	<link href="https://fonts.googleapis.com/css?family=Ubuntu:400,500,700" rel="stylesheet">
 	<link rel="stylesheet" type="text/css" href="results.css">
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-	<script src="Load.js" ></script>
 
 </head>
 <body>
@@ -18,10 +17,11 @@
 		<h4>Seek</h4>
 		<form class="form" action="/search" method="GET">
 			<input type="search" placeholder="{{p1}}" class="form-control" id="searchQuery" name="keywords">
+			<button id="search" onclick="location.href='search'">Search</Button>	
 		</form>
 	</div>
 	<hr>
-	<h1 class = "NumResults"> Number of search results: {{!numResults}} </h1>
+	<h1 class = "NumResults"> Search Results: {{!numResults}} </h1>
 	<div id="loop">
 		{{!results}}
 	</div>
