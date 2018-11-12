@@ -56,6 +56,10 @@ h1 {
   left: 0;
 }
 
+.NumResults{
+  margin-left: 10px;
+}
+
 h6 {
   font-weight: 400;
   font-size: 1em;
@@ -157,7 +161,7 @@ nav{
   background-color: #fff;
   background-clip: border-box;
   border: 1px solid rgba(0, 0, 0, 0.125);
-  border-radius: 0.25rem;
+  border-radius: 0.5rem;
   margin-left: 10px;
   margin-bottom: 10px;
   margin-top: 10px;

@@ -123,6 +123,7 @@ def count_words():
     search_results = get_search_results(inputWords[0])
 
     results = ""
+    resultsLen = len(search_results)
     for item in search_results:
         results += "<div class = 'blurred-box' style='max-width: 50rem'>"
         results += "    <h4 class = 'result-title'> " + item[1] + "</h4>"
@@ -150,7 +151,7 @@ def count_words():
         email = "<h6>Signed In as " + userEmail + "</h6>"
         return template('./views/signed_in_results.html', ResultsTable=table, HistoryTable = userHistoryTable, Email = email)
     # If user is not logged in, return anonymous mode view
-    return template('./views/anonymous_results.html', ResultsTable=table, p1=keywords, results=results)
+    return template('./views/anonymous_results.html', ResultsTable=table, p1=keywords, results=results, numResults = resultsLen)
 # Function used to generate HTML results table
 def create_results_table(word_dict):
     table = '\t<table class="table table-bordered" id="results">\n'
