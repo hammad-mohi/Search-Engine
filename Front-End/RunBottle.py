@@ -121,6 +121,14 @@ def count_words():
     inputWords = keywords.split()
     # search_key is the first word
     search_results = get_search_results(inputWords[0])
+
+    results = ""
+    for item in search_results:
+        results += "<div class = 'blurred-box' style='max-width: 50rem'>"
+        results += "    <h4 class = 'result-title'> " + item[1] + "</h4>"
+        results += "    <a class = 'result-link' href='" + item[0] + "' target='_blank'>Link</a>"
+        results += "   <h1 class = 'result-desc'> " + item[2] + "</h1>"
+        results += "</div>"
     # search_results = [["First", "Link0", "Desc0"],["second", "Link1", "Desc1"],["third", "Link2", "Desc2"],["fourth", "Link3", "Desc3"] ]
     for word in inputWords:
         if word in worddict:
@@ -142,7 +150,7 @@ def count_words():
         email = "<h6>Signed In as " + userEmail + "</h6>"
         return template('./views/signed_in_results.html', ResultsTable=table, HistoryTable = userHistoryTable, Email = email)
     # If user is not logged in, return anonymous mode view
-    return template('./views/anonymous_results.html', ResultsTable=table, p1=keywords, results=json.dumps(search_results))
+    return template('./views/anonymous_results.html', ResultsTable=table, p1=keywords, results=results)
 # Function used to generate HTML results table
 def create_results_table(word_dict):
     table = '\t<table class="table table-bordered" id="results">\n'

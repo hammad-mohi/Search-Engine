@@ -22,25 +22,7 @@
 	</div>
 	<hr>
 	<div id="loop">
-		<script>
-			var resultsObject = (("{{results}}").replace(/&(l|g|quo)t;/g, function(a,b){
-					return {
-						l : '<',
-						g : '>',
-						quo: '"'
-					}[b];
-			}));
-
-		var results = JSON.parse(resultsObject);
-			console.log(results1);
-			for (var i = 0; i < 4; i++){
-						document.write("<div class = 'blurred-box' style='max-width: 50rem'>");
-						document.write(" 	<h4 class = 'result-title'> " + results[i][1] + "</h4>");
-						document.write("	<a class = 'result-link' href='" + results[i][0] + "' target='_blank'>Link</a>");
-						document.write("	<h1 class = 'result-desc'> " + results[i][2] + "</h1>");
-						document.write("</div>");
-				}
-		</script>
+		{{!results}}
 	</div>
 	<hr>
 	<nav aria-label="Page navigation example" id = "nav" >
