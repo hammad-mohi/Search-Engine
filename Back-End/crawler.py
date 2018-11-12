@@ -170,7 +170,7 @@ class crawler(object):
         # compute the new url based on import 
         curr_url = urlparse.urldefrag(curr_url)[0]
         parsed_url = urlparse.urlparse(curr_url)
-        return urlparse.urljoin(parsed_url.geturl(), rel)
+        return urlparse.urljoin(parsed_url.geturl(), rel).strip("/")
 
     def add_link(self, from_doc_id, to_doc_id):
         """Add a link into the database, or increase the number of links between
@@ -323,7 +323,7 @@ class crawler(object):
             else:
                 self._add_text(tag)
 
-    def crawl(self, depth=1, timeout=3):
+    def crawl(self, depth=2, timeout=3):
         """Crawl the web!"""
         seen = set()
 
@@ -382,5 +382,5 @@ class crawler(object):
 
 if __name__ == "__main__":
     bot = crawler(None, "urls.txt")
-    bot.crawl(depth=1)
+    bot.crawl(depth=2)
 
