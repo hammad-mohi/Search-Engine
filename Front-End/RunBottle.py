@@ -1,5 +1,6 @@
 import bottle
 import httplib2
+import json
 import redis
 from collections import defaultdict
 from apiclient.discovery import build
@@ -119,7 +120,7 @@ def count_words():
     inputWords = keywords.split()
     # search_key is the first word
     search_results = get_search_results(inputWords[0])
-    
+    # search_results = [["First", "Link0", "Desc0"],["second", "Link1", "Desc1"],["third", "Link2", "Desc2"],["fourth", "Link3", "Desc3"] ]
     for word in inputWords:
         if word in worddict:
             worddict[word] += 1
@@ -133,14 +134,14 @@ def count_words():
                 searchHistory[userID][word] = 1
     # Generate search results html table
     table = create_results_table(worddict)
-    
+
     # If user is logged in, create user history html table and return logged-in template
     if "logged_in" in request.session and request.session["logged_in"] is True:
         userHistoryTable = create_history_table(searchHistory[userID])
         email = "<h6>Signed In as " + userEmail + "</h6>"
         return template('./views/signed_in_results.html', ResultsTable=table, HistoryTable = userHistoryTable, Email = email)
     # If user is not logged in, return anonymous mode view
-    return template('./views/anonymous_results.html', ResultsTable=table, p1=keywords, results=search_results)
+    return template('./views/anonymous_results.html', ResultsTable=table, p1=keywords, results=json.dumps(search_results))
 # Function used to generate HTML results table
 def create_results_table(word_dict):
     table = '\t<table class="table table-bordered" id="results">\n'
