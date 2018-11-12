@@ -1,4 +1,7 @@
-function Load(results){
+function Load(results_string){
+	
+	results = JSON.parse(results_string);
+
 	for (var i = 0; i < 5; i++){
     		document.write("<div class = 'blurred-box' style='max-width: 50rem'>");
     		document.write(" 	<h4 class = 'result-title'> " + results[i][1] + "</h4>");

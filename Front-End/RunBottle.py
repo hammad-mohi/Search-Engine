@@ -1,6 +1,7 @@
 import bottle
 import httplib2
 import redis
+import json
 from collections import defaultdict
 from apiclient.discovery import build
 from googleapiclient.errors import HttpError
@@ -118,8 +119,7 @@ def count_words():
     '''
     inputWords = keywords.split()
     # search_key is the first word
-    search_results = get_search_results(inputWords[0])
-    
+    search_results = json.dumps(get_search_results(inputWords[0]))
     for word in inputWords:
         if word in worddict:
             worddict[word] += 1
