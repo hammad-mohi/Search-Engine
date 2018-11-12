@@ -2,7 +2,7 @@
 
 var numberOfItems = $("#loop .blurred-box").length;
 var limPerPage = 5;
-var numPagesShown = 10;
+var numPagesShown = 9;
 
 $("#loop .blurred-box:gt("+ (limPerPage - 1) +")").hide();
 var totalPages = Math.round(numberOfItems / limPerPage);
@@ -11,9 +11,9 @@ $('.pagination').append("<li class = 'page-item active'><a class='page-link' hre
 
 for(var i = 2; i <= totalPages; i++){
   $('.pagination').append("<li class = 'page-item'><a class='page-link' href='javascript:void(0)'>" + i + "</a></li>");
-  //if (i > numPagesShown){
-  //  $(".pagination > li:eq(" + i + ")").hide();
-  //}
+  if (i > numPagesShown){
+    $(".pagination > li:eq(" + i + ")").hide();
+  }
 }
 $('.pagination').append("<li id='next-page'><a class='page-link' href='javascript:void(0)' aria-label='Next'><span aria-hidden='true'>&raquo;</span></a></li>");
 
@@ -32,7 +32,7 @@ $('.pagination li.page-item').on("click", function(){
     for (var i = grandTotal - limPerPage; i < grandTotal; i++){
       $("#loop .blurred-box:eq("+ i + ")").show();
     }
-    /*
+    
     if (currentPage >= 3){
       var pageToHide;
       var pageToShow;
@@ -65,13 +65,13 @@ $('.pagination li.page-item').on("click", function(){
           $(".pagination > li:eq(" + pageToShow +")").show();
         }
       }
-    }*/
+    }
   }
 });
 
 $("#next-page").on("click", function(){
   var currentPage = $(".pagination li.active").index();
-  if(currentPage === totalPages){
+  if(currentPage === totalPages+1){
     return false;
   }
   else{
@@ -85,14 +85,14 @@ $("#next-page").on("click", function(){
     }
     $(".pagination > li:eq(" + currentPage +")").addClass("active");
 
-    /*if(totalPages > 5){
-      if(currentPage > 3 && currentPage < totalPages-1){
-        var hid = currentPage - 3;
-        var show = currentPage + 2;
+    if(totalPages > 5){
+      if(currentPage > 5 && currentPage <= totalPages){
+        var hid = currentPage - 5;
+        var show = currentPage + 4;
         $(".pagination > li:eq(" + hid + ")").hide();
         $(".pagination > li:eq(" + show + ")").show();
       }
-    }*/
+    }
   }
 });
 
@@ -113,13 +113,13 @@ $("#prev-page").on("click", function(){
     }
     $(".pagination > li:eq(" + currentPage +")").addClass("active");
 
-    /*if(totalPages > 5){
-      if(currentPage >= 3 && currentPage <8){
-        var hid = currentPage + 3;
-        var show = currentPage - 2;
+    if(totalPages > 5){
+      if(currentPage >= 5 && currentPage < totalPages - 4){
+        var hid = currentPage + 5;
+        var show = currentPage - 4;
         $(".pagination > li:eq(" + hid + ")").hide();
         $(".pagination > li:eq(" + show + ")").show();
       }
-    }*/
+    }
   }
 });

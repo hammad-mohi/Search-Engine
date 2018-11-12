@@ -111,9 +111,9 @@ button:hover {
 }
 
 input[type=button]{
-  position: fixed;
+  position: relative;
   margin: auto;
-  margin-top: 80%;
+  margin-top: 45rem;
   display: block;
 }
 

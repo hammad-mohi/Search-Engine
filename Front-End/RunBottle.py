@@ -126,10 +126,10 @@ def count_words():
     for item in search_results:
         results += "<div class = 'blurred-box' style='max-width: 50rem'>"
         results += "    <h4 class = 'result-title'> " + item[1] + "</h4>"
-        results += "    <a class = 'result-link' href='" + item[0] + "' target='_blank'>Link</a>"
+        results += "    <a class = 'result-link' href='" + item[0] + "' target='_blank'>" + item[0] + "</a>"
         results += "   <h1 class = 'result-desc'> " + item[2] + "</h1>"
         results += "</div>"
-    # search_results = [["First", "Link0", "Desc0"],["second", "Link1", "Desc1"],["third", "Link2", "Desc2"],["fourth", "Link3", "Desc3"] ]
+
     for word in inputWords:
         if word in worddict:
             worddict[word] += 1
