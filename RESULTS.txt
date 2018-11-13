@@ -6,7 +6,7 @@
 
 - Max response time = 4825 ms
 
----------------------------------dstat--------------------------------
+------------------------------dstat--------------------------------
 
 ----total-cpu-usage---- -dsk/total- -net/total- ---paging-->
 usr sys idl wai hiq siq| read  writ| recv  send|  in   out >
@@ -29,13 +29,13 @@ usr sys idl wai hiq siq| read  writ| recv  send|  in   out >
   0   1  99   0   0   0|   0     0 |2355B 2764B|   0     0 >
 
 -------------------------------------------------------------------
----------------------------------Benchmark----------------------------
+------------------------------Benchmark----------------------------
+
 This is ApacheBench, Version 2.3 <$Revision: 1807734 $>
 
 Copyright 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/
 
 Licensed to The Apache Software Foundation, http://w-ww.apache.org/
-
 
 
 Benchmarking 52.54.96.56 (be patient)
@@ -93,7 +93,7 @@ Percentage of the requests served within a certain time (ms)
   99%    646
  100%   4825 (longest request)
 
-------------------------------- Comparison -----------------------
+------------------------------ Comparison -----------------------
 
 Lab 3 benchmarking results were significantly slower than Lab 2 results. 
 This is because the search queries are being parsed and are looked up in the database.
