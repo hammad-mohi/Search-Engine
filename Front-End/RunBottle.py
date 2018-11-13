@@ -2,7 +2,6 @@ import bottle
 import httplib2
 import json
 import redis
-import json
 from collections import defaultdict
 from apiclient.discovery import build
 from googleapiclient.errors import HttpError
@@ -11,9 +10,9 @@ from bottle import route, run, get, post, request, static_file, template, error
 from oauth2client.client import flow_from_clientsecrets, OAuth2WebServerFlow
 
 # Constants
-HOME = "http://localhost:8080/"
+HOME = "http://localhost:80/"
 CLIENT_SECRET = "woMB_Z4XCZTyAW_-2hdUNpfx"
-REDIRECT = "http://localhost:8080/redirect"
+REDIRECT = "http://localhost:80/redirect"
 SCOPE = "https://www.googleapis.com/auth/userinfo.email"
 CLIENT_ID = "547443438769-9q9tatcnkpv6g05cj9d9ds98n0q661t1.apps.googleusercontent.com"
 
@@ -59,6 +58,7 @@ def png(filename):
 @error(402)
 @error(403)
 @error(404)
+@error(500)
 def error404(error):
     return template('./views/error.html', Error_Message="Oops something went wrong", root='./')
 
@@ -233,4 +233,4 @@ def redirect_page():
     bottle.redirect(HOME)
 
 
-run(app=app_middleware, host='0.0.0.0', port=8080, debug=True, reoloader = True)
+run(app=app_middleware, host='0.0.0.0', port=80, debug=True, reoloader = True)

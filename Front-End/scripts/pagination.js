@@ -6,13 +6,13 @@ var numPagesShown = 1;
 
 
 $("#loop .blurred-box:gt("+ (limPerPage - 1) +")").hide();
-var totalPages = Math.round(numberOfItems / limPerPage);
+var totalPages = Math.ceil(numberOfItems / limPerPage);
 
-$('.pagination').append("<li class = 'page-item active'><a class='page-link' href='javascript:void(0)'>" + 0 +"/" + totalPages +"</a></li>");
+$('.pagination').append("<li class = 'page-item active'><a class='page-link' href='javascript:void(0)'>" + 1 +"/" + totalPages +"</a></li>");
 
-for(var i = 1; i <= (totalPages); i++){
+for(var i = 2; i < (totalPages + 1 ); i++){
   $('.pagination').append("<li class = 'page-item'><a class='page-link' href='javascript:void(0)'>" + i + "/" + totalPages + "</a></li>");
-  $(".pagination > li:eq(" + (i +1) + ")").hide();
+  $(".pagination > li:eq(" + i + ")").hide();
 }
 $('.pagination').append("<li id='next-page'><a class='page-link' href='javascript:void(0)' aria-label='Next'><span aria-hidden='true'>&raquo;</span></a></li>");
 
@@ -37,7 +37,7 @@ $('.pagination li.page-item').on("click", function(){
 
 $("#next-page").on("click", function(){
   var currentPage = $(".pagination li.active").index();
-  if(currentPage === totalPages + 1){
+  if(currentPage === totalPages){
     return false;
   }
   else{
