@@ -216,7 +216,7 @@ class crawler(object):
         # add the just found URL to the url queue
         self._url_queue.append((dest_url, self._curr_depth))
         
-        # add a link entry into the database from the current document to the
+        # add a link entry from the current document to the
         # other document
         dest_doc_id = self.document_id(dest_url)
         self.add_link(self._curr_doc_id, dest_doc_id)
@@ -323,7 +323,7 @@ class crawler(object):
             else:
                 self._add_text(tag)
 
-    def crawl(self, depth=2, timeout=3):
+    def crawl(self, depth=1, timeout=3):
         """Crawl the web!"""
         seen = set()
 
@@ -382,5 +382,5 @@ class crawler(object):
 
 if __name__ == "__main__":
     bot = crawler(None, "urls.txt")
-    bot.crawl(depth=2)
+    bot.crawl(depth=1)
 
