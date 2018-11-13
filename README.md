@@ -13,5 +13,10 @@ Accessing front-end on AWS:
    - Open browser and go to: 52.54.96.56:80
 
 Front-end benchmarking results:
-   - 
+   - Check RESULTS.txt
+
+Bonus Features:
+   - CSS animations
+   - Dynamic JavaScript Pagination
+   - Search results also show descriptions and titles 
  
