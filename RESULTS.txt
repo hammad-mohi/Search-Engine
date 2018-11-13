@@ -1,3 +1,60 @@
+- Max Number of connections that can be handled by the server before any connection drops = 803  with concurrecy set to 50
+
+- Max Number of requests per second = 104.74
+
+- Average response time = 81 ms
+
+- Max response time = 4825 ms
+
+---------------------------------dstat--------------------------------
+
+----total-cpu-usage---- -dsk/total- -net/total- ---paging-->
+usr sys idl wai hiq siq| read  writ| recv  send|  in   out >
+  2   0  97   0   0   0|  17k   73k|   0     0 |   0     0 >
+  0   0 100   0   0   0|   0    32k| 520B 1126B|   0     0 >
+  0   0 100   0   0   0|   0     0 | 104B  420B|   0     0 >
+  0   0 100   0   0   0|   0   896k| 104B  412B|   0     0 >
+  0   0 100   0   0   0|   0     0 | 104B  420B|   0     0 >
+  0   0 100   0   0   0|   0     0 | 104B  412B|   0     0 >
+  0   0 100   0   0   0|   0     0 | 104B  412B|   0     0 >
+  0   0 100   0   0   0|   0     0 | 104B  412B|   0     0 >
+  0   0 100   0   0   0|   0     0 |  52B  310B|   0     0 >
+  5   2  93   0   0   0|   0  8192B|  28k   92k|   0     0 >
+ 26   5  68   0   0   1|   0     0 | 100k  430k|   0     0 >
+ 28   5  65   0   0   2|   0     0 | 109k  501k|   0     0 >
+  0   0 100   0   0   0|   0     0 | 502B  508B|   0     0 >
+  0   0 100   0   0   0|   0     0 |1007B  808B|   0     0 >
+  0   0 100   0   0   0|   0     0 | 404B  610B|   0     0 >
+  0   1  98   1   0   0|   0    11M|1607B 3017B|   0     0 >
+  0   1  99   0   0   0|   0     0 |2355B 2764B|   0     0 >
+
+-------------------------------------------------------------------
+---------------------------------Benchmark----------------------------
+This is ApacheBench, Version 2.3 <$Revision: 1807734 $>
+
+Copyright 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/
+
+Licensed to The Apache Software Foundation, http://w-ww.apache.org/
+
+
+
+Benchmarking 52.54.96.56 (be patient)
+
+Completed 100 requests
+
+Completed 200 requests
+
+Completed 300 requests
+
+Completed 400 requests
+
+Completed 500 requests
+
+Completed 600 requests
+
+Completed 700 requests
+
+Finished 700 requests
 
 Server Software:        WSGIServer/0.1
 Server Hostname:        52.54.96.56
@@ -35,3 +92,9 @@ Percentage of the requests served within a certain time (ms)
   98%    636
   99%    646
  100%   4825 (longest request)
+
+------------------------------- Comparison -----------------------
+
+Lab 3 benchmarking results were significantly slower than Lab 2 results. 
+This is because the search queries are being parsed and are looked up in the database.
+The document look up takes a much longer time than just parsing the query as we did in Lab 2. This explains the slower speeds.
