@@ -1,6 +1,22 @@
-from crawler import crawler
-from pagerank import page_rank
+#from crawler import crawler
+#from pagerank import page_rank
 import redis
+import pymongo
+from pymongo import MongoClient
+
+connection_params={
+    'user': 'Deep297',
+    'password': 'seek-search3',
+    'host': 'ds111244.mlab.com',
+    'port': '11244',
+    'namespace': 'seek_search-engine',
+}
+
+connection = MongoClient('mongodb://Deep297:seek-search3@ds111244.mlab.com:'
+                         '11233/seek_search-engine'.format(**connection_params))
+db = connection['seek_search-engine']
+db.authenticate('Deep297', 'seek-search3')
+print (db.collection_names())
 
 # Get crawler object and crawl on urls found in urls.txt
 crawler = crawler(None, 'urls.txt')

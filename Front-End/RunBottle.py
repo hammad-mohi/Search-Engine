@@ -10,9 +10,9 @@ from bottle import route, run, get, post, request, static_file, template, error
 from oauth2client.client import flow_from_clientsecrets, OAuth2WebServerFlow
 
 # Constants
-HOME = "http://localhost:80/"
+HOME = "http://localhost:8080/"
 CLIENT_SECRET = "woMB_Z4XCZTyAW_-2hdUNpfx"
-REDIRECT = "http://localhost:80/redirect"
+REDIRECT = "http://localhost:8080/redirect"
 SCOPE = "https://www.googleapis.com/auth/userinfo.email"
 CLIENT_ID = "547443438769-9q9tatcnkpv6g05cj9d9ds98n0q661t1.apps.googleusercontent.com"
 
@@ -38,7 +38,7 @@ def setup_request():
 @route('<filename:re:.*\.css>', name="static")
 def css(filename):
     print ("css:" + filename)
-    return static_file(filename, root='./styles')
+    return static_file(filename, root='./')
 
 # Route used to service .js file requests
 @route('<filename:re:.*\.js>', name="static")
@@ -126,13 +126,13 @@ def count_words():
     # search_key is the first word
     if (len(keywords) > 0):
         search_results = get_search_results(inputWords[0])
-    
+
     else:
         return template('./views/error.html', Error_Message="No results found for entered keyword", root='./')
-    
+
     if (len(search_results) == 0):
-         return template('./views/error.html', Error_Message="No results found for entered keyword", root='./')       
-    
+         return template('./views/error.html', Error_Message="No results found for entered keyword", root='./')
+
 
     results = ""
     resultsLen = len(search_results)
@@ -233,4 +233,4 @@ def redirect_page():
     bottle.redirect(HOME)
 
 
-run(app=app_middleware, host='0.0.0.0', port=80, debug=True, reoloader = True)
+run(app=app_middleware, host='0.0.0.0', port=8080, debug=True, reoloader = True)
