@@ -2,6 +2,7 @@ import bottle
 import httplib2
 import json
 import redis
+import pymongo
 from collections import defaultdict
 from apiclient.discovery import build
 from googleapiclient.errors import HttpError
@@ -85,7 +86,25 @@ def hello():
     return template('./views/anonymous.html', root='./')
 
 def get_search_results(search_key):
-    rdb = redis.Redis()
+    myclient = pymongo.MongoClient("mongodb://Deep297:seek-search3@ds111244.mlab.com:11244/seek_search-engine")
+    db = myclient["seek_search-engine"]
+    lexicon = db["lexicons"]
+    inverted_index = db["inverted_index"]
+    documents = db["documents"]
+    docs = []
+    word_id = lexicon.distinct(search_key)
+    if(word_id):
+        doc_ids = inverted_index.distinct(str(word_id[0]))
+        doc_ids = doc_ids[0][5:-2]
+        for item in list(doc_ids.split(',')):
+            doc_t = []
+            info = list(documents.distinct(item.strip()))
+            for item in info:
+                doc_t.append(item)
+            docs.append(doc_t)
+        docs.sort(key=lambda x: x[0], reverse=False)
+    return docs
+    '''rdb = redis.Redis()
     word_id = rdb.get('lexicon:' + search_key)
     docs = []
     if word_id:
@@ -99,14 +118,15 @@ def get_search_results(search_key):
             doc.append(rdb.get('pagerank:' + docID))
             docs.append(doc)
         docs.sort(key=lambda x: x[3], reverse=True)
-    return docs
+    return docs'''
+
 
 # Function that gets called when a user hits Submit button
 @route('/search', method="GET")
 def count_words():
     # Get input string from input field and conver to lower case
     keywords = request.query.keywords
-    #inputString = keywords.lower()
+    inputString = keywords.lower()
 
     # Local dictionary used to store keywords from current search
     worddict = {}
@@ -122,9 +142,9 @@ def count_words():
         in the global searchHistory for the logged-in user dictionary and
         the local search keywords dictionary. If word exits, increment word count.
     '''
-    inputWords = keywords.split()
+    inputWords = inputString.split()
     # search_key is the first word
-    if (len(keywords) > 0):
+    if (len(inputString) > 0):
         search_results = get_search_results(inputWords[0])
 
     else:
@@ -137,11 +157,12 @@ def count_words():
     results = ""
     resultsLen = len(search_results)
     for item in search_results:
-        results += "<div class = 'blurred-box' style='max-width: 55rem'>"
-        results += "    <h4 class = 'result-title'> " + item[1] + "</h4>"
-        results += "    <a class = 'result-link' href='" + item[0] + "' target='_blank'>" + item[0] + "</a>"
-        results += "   <h1 class = 'result-desc'> " + item[2] + "</h1>"
-        results += "</div>"
+        if (len(item) == 4):
+            results += "<div class = 'blurred-box' style='max-width: 55rem'>"
+            results += "    <h4 class = 'result-title'> " + item[1] + "</h4>"
+            results += "    <a class = 'result-link' href='" + item[3] + "' target='_blank'>" + item[3] + "</a>"
+            results += "   <h1 class = 'result-desc'> " + item[2] + "</h1>"
+            results += "</div>"
 
     for word in inputWords:
         if word in worddict:
