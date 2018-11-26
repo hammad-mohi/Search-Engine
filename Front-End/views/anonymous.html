@@ -10,18 +10,24 @@
 	<script type='text/javascript' src='autocomplete.js'></script>
 </head>
 <body>
-	<button id="sign_in" onclick="location.href='sign-in'">Log In</button>
-	<div class="header">
-		<h1>Seek</h1>
+	<div id="header">
+		<a href="http://localhost:8080"> <img src="http://www.logobook.com/wp-content/uploads/2018/01/IMEVISION_Instituto_Mexicano_de_la_Television_logo.svg" id = "logo">
+		</a>
+		<button id="log-in" onclick="location.href='sign-in'"><i class="fas fa-user-circle"></i></button>
 	</div>
-	<form class="form" autocomplete="off" action="/search" method="GET">
-		<input class="form" type="search" id="search-entry" placeholder="Seek & You Shall Find" class="form-control" id="searchQuery" name="keywords">
-		<button id="search" onclick="location.href='search'">Search</Button>
-		<div id="autocomplete" class="autocomplete"></div>
-	</form>
-	<h6>Anonymous Mode</h6>
+	<div id="main">
+		<h1 id="title">Seek</h1>	
+		<form id="search-form" action="/search" method="GET">
+			<input type="search" id="search-bar" placeholder="Seek & You Shall Find" name="keywords" autocomplete="off">
+			<button type="submit" id="search-button"><i class="fas fa-search"></i></button>
+			<div id="autocomplete"></div>
+		</form>
+	</div>
+	<div id="footer">
+		<h6 id="mode"><i class="fas fa-user-secret"></i>&ensp;Anonymous Mode</h6>
+	</div>	
 	<script >
-		autocomplete(document.getElementById("search-entry"), document.getElementById("autocomplete"));
+		autocomplete(document.getElementById("search-bar"), document.getElementById("autocomplete"));
 	</script>
 </body>
 </html>

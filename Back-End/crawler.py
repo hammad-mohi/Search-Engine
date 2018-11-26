@@ -24,6 +24,7 @@ import urlparse
 from BeautifulSoup import *
 from collections import defaultdict
 import re
+import threading
 
 def attr(elem, attr):
     """An html attribute from an html element. E.g. <a href="">, then
@@ -118,7 +119,16 @@ class crawler(object):
         self._resolved_inverted_index = defaultdict(set)
         self._links = []
         self._document_index = defaultdict(lambda: [None]*4)
-        # get all urls into the queue
+
+	# locks for data structures
+	doc_cache_lock = threading.Lock()
+	word_cache_lock = threading.Lock()
+	inv_index_lock = threading.Lock()
+	r_inv_index_lock = threading.Lock()
+	links_lock = threading.Lock()
+	docs_lock = threading.Lock()
+
+	# get all urls into the queue
         try:
             with open(url_file, 'r') as f:
                 for line in f:
@@ -276,19 +286,6 @@ class crawler(object):
             def __init__(self, obj):
                 self.next = obj
 
-        """
-        # get first 25 words
-        full_text = soup.getText()
-        description = ''
-        if full_text:
-            for counter, word in enumerate(full_text.split()):
-                if (counter > 25 or len(word) > 20):
-                    description += ' ...'
-                    break
-                description += word + " "
-
-        self._document_index[self._curr_doc_id][2] = description
-        """
         tag = soup.html
         stack = [DummyTag(), soup.html]
 
@@ -325,7 +322,8 @@ class crawler(object):
 
     def crawl(self, depth=1, timeout=3):
         """Crawl the web!"""
-        seen = set()
+
+	seen = set()
 
         while len(self._url_queue):
 
@@ -364,6 +362,7 @@ class crawler(object):
                 if socket:
                     socket.close()
 
+
     def get_inverted_index(self):
         """Returns the inverted_index which contains mappings from word_ids to doc_id sorted by word_id"""
         return dict(self._inverted_index)
@@ -381,5 +380,5 @@ class crawler(object):
         return dict(self._word_id_cache)
 
 if __name__ == "__main__":
-    bot = crawler(None, "urls.txt")
-    bot.crawl(depth=1)
+	crawler = crawler(None, "urls.txt")
+	crawler.crawl()

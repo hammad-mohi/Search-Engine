@@ -1,8 +1,8 @@
 body {
   width: 100wh;
-  height: 90vh;
-  color: #fff;
-  font-color: rgba(1,1,1,0.4);
+  height: 100vh;
+  font-color: rgba(0,0,0,0.6);
+  font-family: 'Ubuntu';
   background: linear-gradient(-45deg, #EE7752, #E73C7E, #23A6D5, #23D5AB);
   background-size: 400% 400%;
   -webkit-animation: Gradient 15s ease infinite;
@@ -47,7 +47,6 @@ body {
 }
 
 h1 {
-  font-family: 'Ubuntu';
   font-weight: 700;
   font-size: 1em;
   color: rgba(0,0,0,0.6);
@@ -95,7 +94,6 @@ input[type=search] {
   outline: none;
   display: block;
   text-align: center;
-  font-family: Ubuntu;
   font-size: 15px;
   position: relative;
   left: 2%;
@@ -134,7 +132,6 @@ button:hover {
 
 #sign_in {
   float: right;
-  font-family: 'Ubuntu'
   position:absolute;
   background: rgba(0,0,0,0.6);
   color: white;
@@ -251,7 +248,6 @@ nav{
 #search {
   float: center;
   text-align: center;
-  font-family: 'Ubuntu'
   position:absolute;
   background: rgba(0,0,0,0.6);
   color: white;
