@@ -23,7 +23,6 @@ function autocomplete(inp, div) {
         if ((arr[i].toLowerCase()).includes(val.toLowerCase()) && num_divs < 5) {
           /*create a DIV element for each matching element:*/
           index = arr[i].toLowerCase().indexOf(val.toLowerCase());
-          console.log(index);
           b = document.createElement("DIV");
           /*make the matching letters bold:*/
           if(index == 0){

@@ -85,42 +85,6 @@ def hello():
     print("You are not logged in")
     return template('./views/anonymous.html', root='./')
 
-def get_search_results(search_key):
-    myclient = pymongo.MongoClient("mongodb://Deep297:seek-search3@ds111244.mlab.com:11244/seek_search-engine")
-    db = myclient["seek_search-engine"]
-    lexicon = db["lexicons"]
-    inverted_index = db["inverted_index"]
-    documents = db["documents"]
-    docs = []
-    word_id = lexicon.distinct(search_key)
-    if(word_id):
-        doc_ids = inverted_index.distinct(str(word_id[0]))
-        doc_ids = doc_ids[0][5:-2]
-        for item in list(doc_ids.split(',')):
-            doc_t = []
-            info = list(documents.distinct(item.strip()))
-            for item in info:
-                doc_t.append(item)
-            docs.append(doc_t)
-        docs.sort(key=lambda x: x[0], reverse=False)
-    return docs
-    '''rdb = redis.Redis()
-    word_id = rdb.get('lexicon:' + search_key)
-    docs = []
-    if word_id:
-        doc_ids = rdb.get('inverted_index:' + word_id).split(',')
-        for doc_id in doc_ids:
-            doc = []
-            docID = doc_id.strip()
-            doc.append(rdb.get('url:' + docID))
-            doc.append(rdb.get('title:' + docID))
-            doc.append(rdb.get('description:' + docID))
-            doc.append(rdb.get('pagerank:' + docID))
-            docs.append(doc)
-        docs.sort(key=lambda x: x[3], reverse=True)
-    return docs'''
-
-
 # Function that gets called when a user hits Submit button
 @route('/search', method="GET")
 def count_words():
@@ -146,24 +110,19 @@ def count_words():
     # search_key is the first word
     if (len(inputString) > 0):
         search_results = get_search_results(inputWords[0])
+        resultsLen = len(search_results)
 
     else:
         return template('./views/error.html', Error_Message="No results found for entered keyword", root='./')
 
-    if (len(search_results) == 0):
-         return template('./views/error.html', Error_Message="No results found for entered keyword", root='./')
+    if (resultsLen == 0):
+        math_expression_result = check_math_expression(keywords)
+        if(math_expression_result != ""):
+                return template('./views/anonymous_results.html', ResultsTable="", p1=keywords, results=math_expression_result, numResults = 0)
+        else:
+            return template('./views/error.html', Error_Message="No results found for entered keyword", root='./')
 
-
-    results = ""
-    resultsLen = len(search_results)
-    for item in search_results:
-        if (len(item) == 4):
-            results += "<div class = 'blurred-box' style='max-width: 55rem'>"
-            results += "    <h4 class = 'result-title'> " + item[1] + "</h4>"
-            results += "    <a class = 'result-link' href='" + item[3] + "' target='_blank'>" + item[3] + "</a>"
-            results += "   <h1 class = 'result-desc'> " + item[2] + "</h1>"
-            results += "</div>"
-
+    result_elements = create_result_elements(search_results)
     for word in inputWords:
         if word in worddict:
             worddict[word] += 1
@@ -184,30 +143,7 @@ def count_words():
         email = "<h6>Signed In as " + userEmail + "</h6>"
         return template('./views/signed_in_results.html', ResultsTable=table, HistoryTable = userHistoryTable, Email = email)
     # If user is not logged in, return anonymous mode view
-    return template('./views/anonymous_results.html', ResultsTable=table, p1=keywords, results=results, numResults = resultsLen)
-# Function used to generate HTML results table
-def create_results_table(word_dict):
-    table = '\t<table class="table table-bordered" id="results">\n'
-    top_words_sorted = sorted(word_dict, key=word_dict.get, reverse=True)
-    for word in top_words_sorted:
-        table+="\t<tr>\n"
-        table+="\t<td>" + word + "</td>\n"
-        table+="\t<td>" + str(word_dict[word]) + "</td>\n"
-        table+="\t</tr>\n"
-    table += "\t</table>"
-    return table
-
-# Function usedd to generate HTML search history table
-def create_history_table(top_words):
-    table = '\t<table class="table table-bordered" id="history">\n'
-    top_words_sorted = sorted(top_words, key=top_words.get, reverse=True)
-    for word in top_words_sorted[:10]:
-        table+="\t<tr>\n"
-        table+="\t<td>" + word + "</td>\n"
-        table+="\t<td>" + str(top_words[word]) + "</td>\n"
-        table+="\t</tr>\n"
-    table += "\t</table>"
-    return table
+    return template('./views/anonymous_results.html', ResultsTable=table, p1=keywords, results=result_elements, numResults = resultsLen)
 
 # Web app goes to this route when user clicks on "sign-in"
 @route('/sign-in')
@@ -252,6 +188,90 @@ def redirect_page():
 
     request.session.save()
     bottle.redirect(HOME)
+
+# Function used to generate HTML results table NOT CURRENLTY IN USE
+def create_results_table(word_dict):
+    table = '\t<table class="table table-bordered" id="results">\n'
+    top_words_sorted = sorted(word_dict, key=word_dict.get, reverse=True)
+    for word in top_words_sorted:
+        table+="\t<tr>\n"
+        table+="\t<td>" + word + "</td>\n"
+        table+="\t<td>" + str(word_dict[word]) + "</td>\n"
+        table+="\t</tr>\n"
+    table += "\t</table>"
+    return table
+
+# Function usedd to generate HTML search history table NOT CURRENLTY IN USE
+def create_history_table(top_words):
+    table = '\t<table class="table table-bordered" id="history">\n'
+    top_words_sorted = sorted(top_words, key=top_words.get, reverse=True)
+    for word in top_words_sorted[:10]:
+        table+="\t<tr>\n"
+        table+="\t<td>" + word + "</td>\n"
+        table+="\t<td>" + str(top_words[word]) + "</td>\n"
+        table+="\t</tr>\n"
+    table += "\t</table>"
+    return table
+
+
+# Queries redis/ mongodb for search results and returns search results dictionary
+def get_search_results(search_key):
+    myclient = pymongo.MongoClient("mongodb://Deep297:seek-search3@ds111244.mlab.com:11244/seek_search-engine")
+    db = myclient["seek_search-engine"]
+    lexicon = db["lexicons"]
+    inverted_index = db["inverted_index"]
+    documents = db["documents"]
+    docs = []
+    word_id = lexicon.distinct(search_key)
+    if(word_id):
+        doc_ids = inverted_index.distinct(str(word_id[0]))
+        doc_ids = doc_ids[0][5:-2]
+        for item in list(doc_ids.split(',')):
+            doc_t = []
+            info = list(documents.distinct(item.strip()))
+            for item in info:
+                doc_t.append(item)
+            docs.append(doc_t)
+        docs.sort(key=lambda x: x[0], reverse=False)
+    return docs
+    '''rdb = redis.Redis()
+    word_id = rdb.get('lexicon:' + search_key)
+    docs = []
+    if word_id:
+        doc_ids = rdb.get('inverted_index:' + word_id).split(',')
+        for doc_id in doc_ids:
+            doc = []
+            docID = doc_id.strip()
+            doc.append(rdb.get('url:' + docID))
+            doc.append(rdb.get('title:' + docID))
+            doc.append(rdb.get('description:' + docID))
+            doc.append(rdb.get('pagerank:' + docID))
+            docs.append(doc)
+        docs.sort(key=lambda x: x[3], reverse=True)
+    return docs'''
+
+# Creates HTML elements for the search results
+def create_result_elements(search_results):
+    results = ""
+    for item in search_results:
+        if (len(item) == 4):
+            results += "<div class = 'blurred-box' style='max-width: 55rem'>"
+            results += "    <h4 class = 'result-title'> " + item[1] + "</h4>"
+            results += "    <a class = 'result-link' href='" + item[3] + "' target='_blank'>" + item[3] + "</a>"
+            results += "   <h1 class = 'result-desc'> " + item[2] + "</h1>"
+            results += "</div>"
+    return results
+
+# Checks to see if search string is a mathematical expression. If it is, return html string for the answer
+def check_math_expression(search_string):
+    test_math = eval(search_string)
+    result = ""
+    if test_math is not None:
+        result += "<div class = 'blurred-box' style='max-width: 55rem'>"
+        result += "    <h4 class = 'result-title'> " + search_string + " = </h4>"
+        result += "   <h1 class = 'result-desc'> " + str(test_math) + "</h1>"
+        result += "</div>"
+        return result
 
 
 run(app=app_middleware, host='0.0.0.0', port=8080, debug=True, reoloader = True)
