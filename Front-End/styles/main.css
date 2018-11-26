@@ -47,6 +47,8 @@ body {
   }
 }
 
+/**************************Main page**************************/
+
 #header {
   height: 20vh;
 }
@@ -54,18 +56,18 @@ body {
 #main {
   height: 60vh;
   text-align: center;
-  padding-top: 10vh;
+  padding-top: 5vh;
 }
 
 #footer {
   height: 20vh;
   text-align: center;
-  padding-top: 15vh;
+  padding-top: 16vh;
 }
 
 #logo {
-  width: 7vh;
-  height: 7vh;
+  width: 6vh;
+  height: 6vh;
   opacity: 0.7;
   outline: none;
   margin-top: 0.5vh;
@@ -81,7 +83,7 @@ body {
   opacity: 0.7;
   border: none;
   background: none;
-  font-size: 5vh;
+  font-size: 4vh;
   margin-top: 0.2vh;
   margin-right: 0.2vh;
   outline: none;
@@ -102,7 +104,7 @@ body {
   color: white;
   background-color: rgba(0,0,0,0.6);
   width: 35vw;
-  height: 7vh;
+  height: 6vh;
   border: none;
   border-radius: 5vw;
   padding: 1.5vh;
@@ -110,9 +112,10 @@ body {
   padding-left: 3vh;
   margin-top: 2vh;
   text-align: center;
-  font-size: 3vh;
+  font-size: 2.5vh;
   overflow-wrap: normal;
   transition: ease-in-out, width .35s ease-in-out;
+  outline: none;
 }
 
 #search-bar:hover {
@@ -135,14 +138,14 @@ body {
 
 #search-button {
   position: absolute;
-  margin-top: 2.7vh;
+  margin-top: 2.5vh;
   margin-left: 1vw;
   background: rgba(0,0,0,0.6);
   border: none;
   border-radius: 3vh;
   color: white;
   cursor: pointer;
-  font-size: 4vh;
+  font-size: 3.5vh;
   outline: none;
 }
 
@@ -151,7 +154,18 @@ body {
 }
 
 #mode {
-  font-size: 2.5vh;
+  font-size: 1.8vh;
+}
+
+strong{
+  font-weight: 400;
+  color: black;
+}
+
+h2 {
+  font-weight: 500;
+  font-size: 4em;
+  top: 50%;
 }
 
 .autocomplete {
@@ -195,13 +209,4 @@ body {
   color: #black;
 }
 
-strong{
-  font-weight: 400;
-  color: black;
-}
-
-h2 {
-  font-weight: 500;
-  font-size: 4em;
-  top: 50%;
-}
+/**************************Results Page**************************/
