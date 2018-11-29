@@ -1,14 +1,12 @@
 import bottle
 import httplib2
-import json
-import redis
-import pymongo
 from collections import defaultdict
 from apiclient.discovery import build
 from googleapiclient.errors import HttpError
 from beaker.middleware import SessionMiddleware
 from bottle import route, run, get, post, request, static_file, template, error
 from oauth2client.client import flow_from_clientsecrets, OAuth2WebServerFlow
+from search import *
 
 # Constants
 HOME = "http://localhost:8080/"
@@ -107,11 +105,9 @@ def count_words():
         the local search keywords dictionary. If word exits, increment word count.
     '''
     inputWords = inputString.split()
-    # search_key is the first word
-    if (len(inputString) > 0):
-        search_results = get_search_results(inputWords[0])
+    if(len(inputWords) > 0):
+        search_results = get_combined_results(inputWords)
         resultsLen = len(search_results)
-
     else:
         return template('./views/error.html', Error_Message="No results found for entered keyword", root='./')
 
@@ -212,66 +208,6 @@ def create_history_table(top_words):
         table+="\t</tr>\n"
     table += "\t</table>"
     return table
-
-
-# Queries redis/ mongodb for search results and returns search results dictionary
-def get_search_results(search_key):
-    myclient = pymongo.MongoClient("mongodb://Deep297:seek-search3@ds111244.mlab.com:11244/seek_search-engine")
-    db = myclient["seek_search-engine"]
-    lexicon = db["lexicons"]
-    inverted_index = db["inverted_index"]
-    documents = db["documents"]
-    docs = []
-    word_id = lexicon.distinct(search_key)
-    if(word_id):
-        doc_ids = inverted_index.distinct(str(word_id[0]))
-        doc_ids = doc_ids[0][5:-2]
-        for item in list(doc_ids.split(',')):
-            doc_t = []
-            info = list(documents.distinct(item.strip()))
-            for item in info:
-                doc_t.append(item)
-            docs.append(doc_t)
-        docs.sort(key=lambda x: x[0], reverse=False)
-    return docs
-    '''rdb = redis.Redis()
-    word_id = rdb.get('lexicon:' + search_key)
-    docs = []
-    if word_id:
-        doc_ids = rdb.get('inverted_index:' + word_id).split(',')
-        for doc_id in doc_ids:
-            doc = []
-            docID = doc_id.strip()
-            doc.append(rdb.get('url:' + docID))
-            doc.append(rdb.get('title:' + docID))
-            doc.append(rdb.get('description:' + docID))
-            doc.append(rdb.get('pagerank:' + docID))
-            docs.append(doc)
-        docs.sort(key=lambda x: x[3], reverse=True)
-    return docs'''
-
-# Creates HTML elements for the search results
-def create_result_elements(search_results):
-    results = ""
-    for item in search_results:
-        if (len(item) == 4):
-            results += "<div class = 'blurred-box' style='max-width: 55rem'>"
-            results += "    <h4 class = 'result-title'> " + item[1] + "</h4>"
-            results += "    <a class = 'result-link' href='" + item[3] + "' target='_blank'>" + item[3] + "</a>"
-            results += "   <h1 class = 'result-desc'> " + item[2] + "</h1>"
-            results += "</div>"
-    return results
-
-# Checks to see if search string is a mathematical expression. If it is, return html string for the answer
-def check_math_expression(search_string):
-    test_math = eval(search_string)
-    result = ""
-    if test_math is not None:
-        result += "<div class = 'blurred-box' style='max-width: 55rem'>"
-        result += "    <h4 class = 'result-title'> " + search_string + " = </h4>"
-        result += "   <h1 class = 'result-desc'> " + str(test_math) + "</h1>"
-        result += "</div>"
-        return result
 
 
 run(app=app_middleware, host='0.0.0.0', port=8080, debug=True, reoloader = True)
