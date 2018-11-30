@@ -1,5 +1,6 @@
 import redis
 import pymongo
+from fuzzywuzzy import fuzz, process
 
 # Queries redis/ mongodb for search results and returns search results dictionary
 def get_word_search_results(search_key):
