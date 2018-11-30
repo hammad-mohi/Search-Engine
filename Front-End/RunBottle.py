@@ -216,25 +216,25 @@ def create_history_table(top_words):
 
 # Queries redis/ mongodb for search results and returns search results dictionary
 def get_search_results(search_key):
-    myclient = pymongo.MongoClient("mongodb://Deep297:seek-search3@ds111244.mlab.com:11244/seek_search-engine")
-    db = myclient["seek_search-engine"]
-    lexicon = db["lexicons"]
-    inverted_index = db["inverted_index"]
-    documents = db["documents"]
-    docs = []
-    word_id = lexicon.distinct(search_key)
-    if(word_id):
-        doc_ids = inverted_index.distinct(str(word_id[0]))
-        doc_ids = doc_ids[0][5:-2]
-        for item in list(doc_ids.split(',')):
-            doc_t = []
-            info = list(documents.distinct(item.strip()))
-            for item in info:
-                doc_t.append(item)
-            docs.append(doc_t)
-        docs.sort(key=lambda x: x[0], reverse=False)
-    return docs
-    '''rdb = redis.Redis()
+    # myclient = pymongo.MongoClient("mongodb://Deep297:seek-search3@ds111244.mlab.com:11244/seek_search-engine")
+    # db = myclient["seek_search-engine"]
+    # lexicon = db["lexicons"]
+    # inverted_index = db["inverted_index"]
+    # documents = db["documents"]
+    # docs = []
+    # word_id = lexicon.distinct(search_key)
+    # if(word_id):
+    #     doc_ids = inverted_index.distinct(str(word_id[0]))
+    #     doc_ids = doc_ids[0][5:-2]
+    #     for item in list(doc_ids.split(',')):
+    #         doc_t = []
+    #         info = list(documents.distinct(item.strip()))
+    #         for item in info:
+    #             doc_t.append(item)
+    #         docs.append(doc_t)
+    #     docs.sort(key=lambda x: x[0], reverse=False)
+    # return docs
+    rdb = redis.Redis()
     word_id = rdb.get('lexicon:' + search_key)
     docs = []
     if word_id:
@@ -248,18 +248,30 @@ def get_search_results(search_key):
             doc.append(rdb.get('pagerank:' + docID))
             docs.append(doc)
         docs.sort(key=lambda x: x[3], reverse=True)
-    return docs'''
+    return docs
 
 # Creates HTML elements for the search results
+# def create_result_elements(search_results):
+#     results = ""
+#     for item in search_results:
+#         if (len(item) == 4):
+#             results += "<div class = 'blurred-box' style='max-width: 55rem'>"
+#             results += "    <h4 class = 'result-title'> " + item[1] + "</h4>"
+#             results += "    <a class = 'result-link' href='" + item[3] + "' target='_blank'>" + item[3] + "</a>"
+#             results += "   <h1 class = 'result-desc'> " + item[2] + "</h1>"
+#             results += "</div>"
+#     return results
+
 def create_result_elements(search_results):
     results = ""
-    for item in search_results:
-        if (len(item) == 4):
-            results += "<div class = 'blurred-box' style='max-width: 55rem'>"
-            results += "    <h4 class = 'result-title'> " + item[1] + "</h4>"
-            results += "    <a class = 'result-link' href='" + item[3] + "' target='_blank'>" + item[3] + "</a>"
-            results += "   <h1 class = 'result-desc'> " + item[2] + "</h1>"
-            results += "</div>"
+    for docs in search_results:
+        # if (len(item) == 4):
+        results += "<div class='blurred-box'>"
+        results += "    <a class='result-title' href='"+ docs[0] + "'>" + docs[1] + "</a>"
+        results += "    <p class='result-link'>" + docs[0] + "</p>"
+        results += "    <hr class='result-separator'>"
+        results += "    <p class='result-desc'>" + docs[2] + "</p>"
+        results += "</div>"
     return results
 
 # Checks to see if search string is a mathematical expression. If it is, return html string for the answer
@@ -267,9 +279,9 @@ def check_math_expression(search_string):
     test_math = eval(search_string)
     result = ""
     if test_math is not None:
-        result += "<div class = 'blurred-box' style='max-width: 55rem'>"
-        result += "    <h4 class = 'result-title'> " + search_string + " = </h4>"
-        result += "   <h1 class = 'result-desc'> " + str(test_math) + "</h1>"
+        result += "<div class='blurred-box'>"
+        result += "    <p class='result-title'>" + search_string + " = </p>"
+        result += "    <p class='result-desc'>" + str(test_math) + "</p>"
         result += "</div>"
         return result
 

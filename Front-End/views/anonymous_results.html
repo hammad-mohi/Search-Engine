@@ -4,37 +4,43 @@
 	<title>Seek</title>
 	<link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
 	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css" integrity="sha384-5sAR7xN1Nv6T6+dT2mhtzEpVJvfS3NScPQTrOxhwjIuvcA67KV2R5Jz6kr4abQsz" crossorigin="anonymous">
-	<link href="https://fonts.googleapis.com/css?family=Ubuntu:400,500,700" rel="stylesheet">
-	<link rel="stylesheet" type="text/css" href="/styles/results.css">
+	<link href="https://fonts.googleapis.com/css?family=Ubuntu:400,500,500i,700" rel="stylesheet">
+	<link rel="stylesheet" type="text/css" href="/styles/main.css">
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-
+	<script type='text/javascript' src='autocomplete.js'></script>
 </head>
 <body>
-	<div>
-		<button id="sign_in" onclick="location.href='sign-in'">Log In</button>
-		<a href="http://localhost:8080"> <img src="Logo.png" alt="Home" width="50" height="50"  id = "logo">
-		</a>
-		<h4>Seek</h4>
-		<form class="form" action="/search" method="GET">
-			<input type="search" placeholder="{{p1}}" class="form-control" id="searchQuery" name="keywords">
-			<button id="search" onclick="location.href='search'">Search</Button>
+	<div id="results-header">
+		<a href="http://localhost:8080"><img src="http://www.logobook.com/wp-content/uploads/2018/01/IMEVISION_Instituto_Mexicano_de_la_Television_logo.svg" id = "results-logo"></a>
+		<form id="results-search-form" action="/search" method="GET">
+			<input type="search" id="results-search-bar" value="{{p1}}" name="keywords" autocomplete="off">
+			<div id="results-autocomplete"></div>
+			<button type="submit" id="results-search-button"><i class="fas fa-search"></i></button>
 		</form>
+		<button id="log-in" onclick="location.href='sign-in'"><i class="fas fa-user-circle"></i></button>
 	</div>
-	<hr>
-	<h1 class = "NumResults"> Search Results: {{!numResults}} </h1>
-	<div id="loop">
-		{{!results}}
+	<hr id="separator">
+	<div id="results">
+		<h1 id = "num-results"> Search Results: {{!numResults}} </h1>
+		<div id="loop">
+			{{!results}}
+		</div>
 	</div>
-	<nav aria-label="Page navigation example" id = "nav" >
-	  <ul class="pagination">
-	    <li id = "prev-page"">
-	      <a class="page-link" href="javascript:void(0)" aria-label="Previous">
-	        <span aria-hidden="true">&laquo;</span>
-	      </a>
-	    </li>
-	  </ul>
-	</nav>
-	<script src="pagination.js"></script>
-	<h6>Anonymous Mode</h6>
+	<div id="results-footer">
+		<nav aria-label="Page navigation example" id="nav" >
+		  <ul class="pagination">
+		    <li id = "prev-page"">
+		      <a class="page-link" href="javascript:void(0)" aria-label="Previous">
+		        <span aria-hidden="true">&laquo;</span>
+		      </a>
+		    </li>
+		  </ul>
+		</nav>
+		<script src="pagination.js"></script>
+		<h6 id="results-mode"><i class="fas fa-user-secret"></i>&ensp;Anonymous Mode</h6>
+	</div>
+	<script >
+		autocomplete(document.getElementById("results-search-bar"), document.getElementById("results-autocomplete"));
+	</script>
 </body>
 </html>

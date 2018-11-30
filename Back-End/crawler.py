@@ -120,13 +120,13 @@ class crawler(object):
         self._links = []
         self._document_index = defaultdict(lambda: [None]*4)
 
-	# locks for data structures
-	doc_cache_lock = threading.Lock()
-	word_cache_lock = threading.Lock()
-	inv_index_lock = threading.Lock()
-	r_inv_index_lock = threading.Lock()
-	links_lock = threading.Lock()
-	docs_lock = threading.Lock()
+	# # locks for data structures
+	# doc_cache_lock = threading.Lock()
+	# word_cache_lock = threading.Lock()
+	# inv_index_lock = threading.Lock()
+	# r_inv_index_lock = threading.Lock()
+	# links_lock = threading.Lock()
+	# docs_lock = threading.Lock()
 
 	# get all urls into the queue
         try:
@@ -223,7 +223,7 @@ class crawler(object):
         #      "alt="+repr(attr(elem,"alt")), \
         #      "text="+repr(self._text_of(elem))
 
-        # add the just found URL to the url queue
+        # add the found URL to the url queue
         self._url_queue.append((dest_url, self._curr_depth))
 
         # add a link entry from the current document to the

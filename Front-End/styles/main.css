@@ -1,6 +1,5 @@
 body {
-  width: 100vw;
-  height: 100vh;
+  height: 100%;
   box-sizing: border-box;
   color: rgba(0,0,0,0.65);
   font-family: 'Ubuntu';
@@ -56,7 +55,7 @@ body {
 #main {
   height: 60vh;
   text-align: center;
-  padding-top: 5vh;
+  padding-top: 10vh;
 }
 
 #footer {
@@ -75,7 +74,7 @@ body {
 }
 
 #logo:hover {
-  opacity: 0.85;
+  opacity: 0.8;
 }
 
 #log-in {
@@ -85,7 +84,7 @@ body {
   background: none;
   font-size: 4vh;
   margin-top: 0.2vh;
-  margin-right: 0.2vh;
+  margin-right: 0.2vw;
   outline: none;
   cursor: pointer;
 }
@@ -102,7 +101,7 @@ body {
 #search-bar {
   position: relative;
   color: white;
-  background-color: rgba(0,0,0,0.6);
+  background-color: rgba(0,0,0,0.65);
   width: 35vw;
   height: 6vh;
   border: none;
@@ -114,8 +113,8 @@ body {
   text-align: center;
   font-size: 2.5vh;
   overflow-wrap: normal;
-  transition: ease-in-out, width .35s ease-in-out;
   outline: none;
+  transition: ease-in-out, width .35s ease-in-out;
 }
 
 #search-bar:hover {
@@ -123,6 +122,7 @@ body {
 }
 
 #search-bar::placeholder {
+  color: white;
   opacity: 1;
 }
 
@@ -131,7 +131,7 @@ body {
 }
 
 #search-bar:focus {
-  background-color:rgba(0,0,0,0.7); 
+  background-color:rgba(0,0,0,0.7);
   box-shadow: 0 0 1vh 0 rgba(0,0,0,0.7);
   width: 50vw;
 }
@@ -140,7 +140,7 @@ body {
   position: absolute;
   margin-top: 2.5vh;
   margin-left: 1vw;
-  background: rgba(0,0,0,0.6);
+  background: rgba(0,0,0,0.65);
   border: none;
   border-radius: 3vh;
   color: white;
@@ -157,34 +157,37 @@ body {
   font-size: 1.8vh;
 }
 
-strong{
+strong {
   font-weight: 400;
-  color: black;
+  color: white;
+  font-size: 2.5vh;
 }
 
 h2 {
   font-weight: 500;
-  font-size: 4em;
+  font-size: 2.5vh;
   top: 50%;
 }
 
-.autocomplete {
+h5 {
+  font-weight: 100;
+  font-size: 2.5vh;
+  top: 50%;
+  color: rgba(220, 220, 220, 0.5);
+  display: inline-block;
+}
+
+#autocomplete {
   /*the container must be positioned relative:*/
-  border: none;
-  padding: 1.5vh;
-  padding-right: 3vh;
-  padding-left: 3vh;
-  width: 40vh;
+  position: relative;
   text-align: center;
-  font-family: Ubuntu;
-  font-size: 1.5rem;
   overflow-wrap: normal;
+  padding-left: 28vw;
+  padding-right: 28vw;
 }
 
 .autocomplete-items {
-  position: absolute;
   border: none;
-  /*position the autocomplete items to be the same width as the container:*/
   top: 100%;
   left: 0;
   right: 0;
@@ -193,20 +196,220 @@ h2 {
 .autocomplete-items div {
   padding: 10px;
   cursor: pointer;
-  background-color: white;
-  border-radius: 5px;
-  border-bottom: 1px solid #d4d4d4;
-}
-
-.autocomplete-items div:hover {
-  /*when hovering an item:*/
-  background-color: #e9e9e9;
+  background-color: rgba(0, 0, 0, 0.7);
 }
 
 .autocomplete-active {
   /*when navigating through the items using the arrow keys:*/
-  background-color: #ffe !important;
-  color: #black;
+  background-color: rgba(0, 0, 0, 0.9) !important;
+}
+
+.autocomplete-items div:hover {
+  /*when hovering an item:*/
+  background-color: rgba(0, 0, 0, 0.9);
 }
 
 /**************************Results Page**************************/
+
+#results-header {
+  height: 7.5vh;
+  text-align: center;
+}
+
+#results {
+  padding-left: 10vw;
+  min-height: 75vh;
+}
+
+#results-footer {
+  height: 7.5vh;
+  text-align: center;
+  padding-top: 2vh;
+}
+
+#results-logo {
+  float: left;
+  width: 6vh;
+  height: 6vh;
+  opacity: 0.7;
+  outline: none;
+  margin-top: 0.5vh;
+  margin-left: 0.5vh;
+}
+
+#results-logo:hover {
+  opacity: 0.8;
+}
+
+#results-search-form {
+  display: inline-block;
+  margin-top: 1.25vh;
+}
+
+#results-search-bar {
+  position: relative;
+  color: white;
+  background-color: rgba(0,0,0,0.65);
+  width: 40vw;
+  height: 5vh;
+  border: none;
+  border-radius: 5vw;
+  padding: 1.5vh;
+  padding-right: 3vh;
+  padding-left: 3vh;
+  margin-left: 1vw;
+  text-align: center;
+  font-size: 2.5vh;
+  overflow-wrap: normal;
+  outline: none;
+  transition: ease-in-out, width .35s ease-in-out;
+}
+
+#results-search-bar:hover {
+  background-color: rgba(0,0,0,0.7);
+}
+
+#results-search-bar::placeholder {
+  opacity: 1;
+}
+
+#results-search-bar:focus::placeholder {
+  opacity: 0;
+}
+
+#results-search-bar:focus {
+  background-color:rgba(0,0,0,0.7);
+  box-shadow: 0 0 1vh 0 rgba(0,0,0,0.7);
+  width: 60vw;
+}
+
+#results-search-button {
+  display: none;
+  margin-top: 1.25vh;
+  margin-left: 1.25vw;
+  background: rgba(0,0,0,0.65);
+  border: none;
+  border-radius: 3vh;
+  color: white;
+  cursor: pointer;
+  font-size: 3vh;
+  outline: none;
+}
+
+#results-search-button:hover {
+  background-color: rgba(0,0,0,0.7);
+}
+
+#results-autocomplete {
+  /*the container must be positioned relative:*/
+  position: relative;
+  margin-left: 3vw;
+  margin-right: 2.65vw;
+  text-align: center;
+  overflow-wrap: normal;
+}
+
+#results-autocomplete > .autocomplete-items {
+  border: none;
+  top: 100%;
+  left: 0;
+  right: 0;
+}
+
+#results-autocomplete > .autocomplete-items div {
+  padding: 10px;
+  cursor: pointer;
+  background-color: rgba(0, 0, 0, 0.8);
+}
+
+#results-autocomplete > .autocomplete-items div:hover {
+  /*when hovering an item:*/
+  background-color: rgba(0, 0, 0, 0.9);
+}
+
+#separator {
+  margin-bottom: 1vh;
+  margin-top: 1vh;
+}
+
+#num-results {
+  font-size: 2.5vh;
+  font-style: italic;
+  margin-left: -9vw;
+}
+
+.blurred-box{
+  width: 80vw;
+  word-wrap: break-word;
+  background: rgba(0,0,0,0.6);
+  border: none;
+  border-radius: 0.5rem;
+  box-shadow: 0 0 1vh 0 rgba(0,0,0,0.7);
+  margin-top: 10px;
+  padding: 1vw 2vw;
+}
+
+.result-title{
+  font-weight: 500;
+  font-size: 2.5vh;
+  color: white
+}
+
+/*.result-title:visited{
+   color: ;
+}*/
+
+.result-link{
+  font-size: 1.8vh;
+  color: #41f483;
+  margin: auto; 
+}
+
+.result-separator{
+  margin-top: 1vh;
+  margin-bottom: 1vh;
+}
+
+.result-desc{
+  font-size: 2vh;
+  color: white;
+}
+
+#nav{
+  position: absolute;
+  margin: auto;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 2vh;
+}
+
+#results-mode{
+  margin-top: 6.5vh; 
+  font-size: 1.8vh; 
+}
+
+.pagination >li > a{
+  background-color: rgba(0,0,0,0.6);
+  color: white;
+  border: none;
+}
+
+.pagination > li > a:hover,
+.pagination > li > span:hover{
+  color: white;
+  background-color: rgba(0,0,0,0.8);
+}
+
+.pagination > .active > a,
+.pagination > .active > a:hover{
+  color: white;
+  background-color: rgba(0,0,0,0.8) !Important;
+}
+
+/**************************Error Page**************************/
+
+#error-main {
+  height: 60vh;
+  text-align: center;
+  padding-top: 12vh;
+}
