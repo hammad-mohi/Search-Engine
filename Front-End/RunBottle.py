@@ -1,14 +1,12 @@
 import bottle
 import httplib2
-import json
-import redis
-import pymongo
 from collections import defaultdict
 from apiclient.discovery import build
 from googleapiclient.errors import HttpError
 from beaker.middleware import SessionMiddleware
 from bottle import route, run, get, post, request, static_file, template, error
 from oauth2client.client import flow_from_clientsecrets, OAuth2WebServerFlow
+from search import *
 
 # Constants
 HOME = "http://localhost:8080/"
@@ -107,11 +105,9 @@ def count_words():
         the local search keywords dictionary. If word exits, increment word count.
     '''
     inputWords = inputString.split()
-    # search_key is the first word
-    if (len(inputString) > 0):
-        search_results = get_search_results(inputWords[0])
+    if(len(inputWords) > 0):
+        search_results = get_combined_results(inputWords)
         resultsLen = len(search_results)
-
     else:
         return template('./views/error.html', Error_Message="No results found for entered keyword", root='./')
 
@@ -212,7 +208,6 @@ def create_history_table(top_words):
         table+="\t</tr>\n"
     table += "\t</table>"
     return table
-
 
 # Queries redis/ mongodb for search results and returns search results dictionary
 def get_search_results(search_key):
