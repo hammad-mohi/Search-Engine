@@ -1,5 +1,6 @@
 import bottle
 import httplib2
+import json
 from collections import defaultdict
 from apiclient.discovery import build
 from googleapiclient.errors import HttpError
@@ -7,6 +8,7 @@ from beaker.middleware import SessionMiddleware
 from bottle import route, run, get, post, request, static_file, template, error
 from oauth2client.client import flow_from_clientsecrets, OAuth2WebServerFlow
 from search import *
+from fuzzywuzzy import fuzz, process
 
 # Constants
 HOME = "http://localhost:8080/"
@@ -59,7 +61,7 @@ def png(filename):
 @error(404)
 @error(500)
 def error404(error):
-    return template('./views/error.html', Error_Message="Oops something went wrong", root='./')
+    return template('./views/error.html', Error_Message="Oops something went wrong", Redirect = "", root='./')
 
 # Display main search engine page without showing any tables by default
 @route('/')
@@ -109,14 +111,15 @@ def count_words():
         search_results = get_combined_results(inputWords)
         resultsLen = len(search_results)
     else:
-        return template('./views/error.html', Error_Message="No results found for entered keyword", root='./')
+        return template('./views/error.html', Error_Message="No results found for entered keyword", Redirect = "", root='./')
 
     if (resultsLen == 0):
         math_expression_result = check_math_expression(keywords)
         if(math_expression_result != ""):
                 return template('./views/anonymous_results.html', ResultsTable="", p1=keywords, results=math_expression_result, numResults = 0)
         else:
-            return template('./views/error.html', Error_Message="No results found for entered keyword", root='./')
+            redirect = guessInput(inputWords)
+            return template('./views/error.html', Error_Message="No results found for " + inputString + " .", Redirect = redirect, root='./')
 
     result_elements = create_result_elements(search_results)
     for word in inputWords:
