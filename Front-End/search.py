@@ -37,6 +37,7 @@ def get_word_search_results(search_key):
         docs.sort(key=lambda x: x[3], reverse=True)
     return docs'''
 
+# Given an input string of words, return search results 
 def get_combined_results(inputWords):
     inputLen = len(inputWords)
     if inputLen == 0:
@@ -44,15 +45,18 @@ def get_combined_results(inputWords):
     elif inputLen == 1:
         return get_word_search_results(inputWords[0])
     else:
+        # Get serach results for the first two words in the search string
         word1_results = get_word_search_results(inputWords[0])
         word2_results = get_word_search_results(inputWords[1])
-        print ("Len1: " + str(len(word1_results)) + " , Len2: " + str(len(word2_results)))
+        # Make a list of the common and non common search results from both words
         combinedResults = intersection(word1_results, word2_results)
-        print("Combined Len: " + str(len(combinedResults)))
+        nonCommonResults = difference(word1_results, combinedResults) + difference(word2_results, combinedResults)
+        # If there were no common results, return both results sorted by pagerank
         if len(combinedResults) == 0:
             return (word1_results + word2_results)
+        # Return list with common results at the beginning and noncommon results at the end
         else:
-            return combinedResults
+            return combinedResults + nonCommonResults
 
 
 
@@ -82,6 +86,12 @@ def check_math_expression(search_string):
         result += "</div>"
         return result
 
+# Return list containing there common elements of the two input lists
 def intersection(lst1, lst2):
     lst3 = [value for value in lst1 if value in lst2]
+    return lst3
+
+# Return list containing the non-common elements of the two input lists
+def difference(lst1, lst2):
+    lst3 = [value for value in lst1 if value not in lst2]
     return lst3
