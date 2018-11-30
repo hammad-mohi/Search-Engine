@@ -3,9 +3,9 @@ seek-search.pem
 /Front-End/data
 client_secrets.json
 crawler.pyc
-dump.rdb
 pagerank.pyc
 Front-End/scripts/data/
 Front-End/styles/backup.css
 .ssh.script
 .sublime.script
+Front-End/search.pyc

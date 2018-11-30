@@ -19,8 +19,14 @@ pagerank = page_rank(crawler._links)
 rdb = redis.Redis()
 rdb.flushdb()
 
+all_words = ''
+
 for word in lexicon:
     rdb.set('lexicon:' + str(word), lexicon[word])
+    all_words = all_words + str(word) + " , "
+
+rdb.set('all_words', all_words.strip(' , '))
+
 for word_id in inverted_index:
     rdb.set('inverted_index:' + str(word_id), str(list(inverted_index[word_id])).strip('[]'))
 for word in resolved_inverted_index:
