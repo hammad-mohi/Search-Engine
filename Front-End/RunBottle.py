@@ -83,7 +83,8 @@ def hello():
         email = "<h6>Signed In as " + userEmail + "</h6>"
         return template('./views/signed_in_results.html', HistoryTable = userHistory, ResultsTable = "", Email= email, root ='./')
     print("You are not logged in")
-    return template('./views/anonymous.html', root='./')
+    listw = json.dumps(getWordList())
+    return template('./views/anonymous.html', wordList=listw, root='./')
 
 # Function that gets called when a user hits Submit button
 @route('/search', method="GET")
@@ -142,7 +143,8 @@ def count_words():
         email = "<h6>Signed In as " + userEmail + "</h6>"
         return template('./views/signed_in_results.html', ResultsTable=table, HistoryTable = userHistoryTable, Email = email)
     # If user is not logged in, return anonymous mode view
-    return template('./views/anonymous_results.html', ResultsTable=table, p1=keywords, results=result_elements, numResults = resultsLen)
+    listw = json.dumps(getWordList())
+    return template('./views/anonymous_results.html', ResultsTable=table, p1=keywords, results=result_elements, numResults = resultsLen, wordList=listw)
 
 # Web app goes to this route when user clicks on "sign-in"
 @route('/sign-in')

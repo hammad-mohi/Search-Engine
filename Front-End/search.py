@@ -1,5 +1,4 @@
 import redis
-import pymongo
 from fuzzywuzzy import fuzz, process
 
 # Queries redis/ mongodb for search results and returns search results dictionary
@@ -93,7 +92,7 @@ def guessInput(inputWords):
     #TODO: REPLACE WITH LIST OF WORDS
     choices = getWordArray()
     ClosestWord = process.extractOne(inputWords[0], choices)
-    print(ClosestWord)
+    print(ClosestWord[0])
     redirect = ""
     if ClosestWord is not None:
         redirect += "<h2 id=error-redirect> Did You Mean:"
@@ -104,6 +103,11 @@ def getWordArray():
     rdb = redis.Redis()
     wordArray = rdb.get('all_words').split(",")
     return wordArray
+
+
+def getWordList():
+    rdb = redis.Redis()
+    return rdb.get('all_words')
 
 
 
