@@ -27,7 +27,9 @@
 		<h6 id="mode"><i class="fas fa-user-secret"></i>&ensp;Anonymous Mode</h6>
 	</div>	
 	<script >
-		autocomplete(document.getElementById("search-bar"), document.getElementById("autocomplete"));
+		var listString = ({{!wordList}});
+		var list = listString.split(",");
+		autocomplete(document.getElementById("search-bar"), document.getElementById("autocomplete"), list);
 	</script>
 </body>
 </html>

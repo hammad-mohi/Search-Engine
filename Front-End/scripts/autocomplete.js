@@ -1,5 +1,4 @@
-function autocomplete(inp, div) {
-  var arr = ["Hello", "Toronto", "USA", "Happy", "UofT", "Canada", "Hi", "Bye", "Hallway", "Artificial"];
+function autocomplete(inp, div, arr) {
   /*the autocomplete function takes two arguments,
   the text field element and an array of possible autocompleted values:*/
   var currentFocus;
