@@ -1,27 +1,9 @@
+from __future__ import division
 import redis
 from fuzzywuzzy import fuzz, process
 
 # Queries redis/ mongodb for search results and returns search results dictionary
 def get_word_search_results(search_key):
-    '''myclient = pymongo.MongoClient("mongodb://Deep297:seek-search3@ds111244.mlab.com:11244/seek_search-engine")
-    db = myclient["seek_search-engine"]
-    lexicon = db["lexicons"]
-    print(lexicon)
-    inverted_index = db["inverted_index"]
-    documents = db["documents"]
-    docs = []
-    word_id = lexicon.distinct(search_key)
-    if(word_id):
-     doc_ids = inverted_index.distinct(str(word_id[0]))
-     doc_ids = doc_ids[0][5:-2]
-     for item in list(doc_ids.split(',')):
-         doc_t = []
-         info = list(documents.distinct(item.strip()))
-         for item in info:
-             doc_t.append(item)
-         docs.append(doc_t)
-     docs.sort(key=lambda x: x[0], reverse=False)
-    return docs'''
     rdb = redis.Redis()
     word_id = rdb.get('lexicon:' + search_key)
     docs = []
@@ -42,7 +24,7 @@ def get_word_search_results(search_key):
 def get_combined_results(inputWords):
     inputLen = len(inputWords)
     if inputLen == 0:
-            return none
+            return None
     elif inputLen == 1:
         return get_word_search_results(inputWords[0])
     else:
@@ -65,7 +47,6 @@ def get_combined_results(inputWords):
 def create_result_elements(search_results):
     results = ""
     for docs in search_results:
-        # if (len(item) == 4):
         results += "<div class='blurred-box'>"
         results += "    <a class='result-title' href='"+ docs[0] + "'>" + docs[1] + "</a>"
         results += "    <p class='result-link'>" + docs[0] + "</p>"
@@ -78,6 +59,7 @@ def create_result_elements(search_results):
 def check_math_expression(search_string):
     try:
         test_math = eval(search_string)
+        print test_math
     except(ValueError, NameError, SyntaxError, TypeError, ZeroDivisionError):
         return ""
     result = ""
@@ -89,10 +71,8 @@ def check_math_expression(search_string):
         return result
 
 def guessInput(inputWords):
-    #TODO: REPLACE WITH LIST OF WORDS
     choices = getWordArray()
     ClosestWord = process.extractOne(inputWords[0], choices)
-    print(ClosestWord[0])
     redirect = ""
     if ClosestWord is not None:
         redirect += "<h2 id=error-redirect> Did You Mean:"

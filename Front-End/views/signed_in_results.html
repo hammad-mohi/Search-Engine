@@ -48,7 +48,17 @@
 		<h6 id="results-mode"> Signed in <span style="font-weight: 700">{{!Name}}</span></h6>
 	</div>
 	<script >
-		autocomplete(document.getElementById("results-search-bar"), document.getElementById("results-autocomplete"));
+		var listString = ({{!wordList}});
+		var list = listString.split(",");
+		autocomplete(document.getElementById("results-search-bar"), document.getElementById("results-autocomplete"), list);
+		function toggle_info() {
+			var x = document.getElementById("user_info");
+		    if (x.style.display === "none") {
+		        x.style.display = "block";
+		    } else {
+		        x.style.display = "none";
+		    }
+		}
 	</script>
 </body>
 </html>
