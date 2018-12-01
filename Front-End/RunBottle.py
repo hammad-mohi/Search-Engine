@@ -70,6 +70,8 @@ def hello():
     if "logged_in" in request.session and request.session["logged_in"] is True:
         userID = request.session["id"]
         userEmail = request.session["email"]
+        userName = request.session["name"]
+        userPhoto = request.session["photo"]
         print ("You are logged in")
         print(userID)
         userHistory = ""
@@ -80,8 +82,7 @@ def hello():
         else:
             # Generate user history table code
             userHistory = create_history_table(searchHistory[userID])
-        email = "<h6>Signed In as " + userEmail + "</h6>"
-        return template('./views/signed_in_results.html', HistoryTable = userHistory, ResultsTable = "", Email= email, root ='./')
+        return template('./views/signed_in.html', HistoryTable = userHistory, ResultsTable = "", Email= userEmail, Name = userName, Photo = userPhoto, root ='./')
     print("You are not logged in")
     return template('./views/anonymous.html', root='./')
 
@@ -98,6 +99,8 @@ def count_words():
     if "id" in request.session:
         userID = request.session["id"]
         userEmail = request.session["email"]
+        userName = request.session["name"]
+        userPhoto = request.session["photo"]
         print(userEmail)
         print(request.session["logged_in"])
 
@@ -139,8 +142,7 @@ def count_words():
     # If user is logged in, create user history html table and return logged-in template
     if "logged_in" in request.session and request.session["logged_in"] is True:
         userHistoryTable = create_history_table(searchHistory[userID])
-        email = "<h6>Signed In as " + userEmail + "</h6>"
-        return template('./views/signed_in_results.html', ResultsTable=table, HistoryTable = userHistoryTable, Email = email)
+        return template('./views/signed_in_results.html', ResultsTable=table, HistoryTable = userHistoryTable, Email = userEmail, Name = userName, Photo = userPhoto, p1=keywords, results=result_elements, numResults = resultsLen)
     # If user is not logged in, return anonymous mode view
     return template('./views/anonymous_results.html', ResultsTable=table, p1=keywords, results=result_elements, numResults = resultsLen)
 
@@ -175,13 +177,20 @@ def redirect_page():
     # Get user information
     users_service = build('oauth2', 'v2', http=http)
     user_document = users_service.userinfo().get().execute()
+    print user_document
     userEmail = user_document['email']
+    try:
+        userName = user_document['name']
+    except KeyError:
+        userName = ""
     userPhoto = user_document["picture"]
 
     # Store id, logged_in value and email in beaker session
     request.session["id"] = user_document["id"]
     request.session["logged_in"] = True
     request.session["email"] = userEmail
+    request.session["name"] = userName
+    request.session["photo"] = userPhoto
 
     userID = request.session["id"]
 

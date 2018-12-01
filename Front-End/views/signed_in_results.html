@@ -4,30 +4,49 @@
 	<title>Seek</title>
 	<link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
 	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css" integrity="sha384-5sAR7xN1Nv6T6+dT2mhtzEpVJvfS3NScPQTrOxhwjIuvcA67KV2R5Jz6kr4abQsz" crossorigin="anonymous">
-	<link href="https://fonts.googleapis.com/css?family=Ubuntu:400,500,700" rel="stylesheet">
-	<link rel="stylesheet" type="text/css" href="main.css">
+	<link href="https://fonts.googleapis.com/css?family=Ubuntu:400,500,500i,700" rel="stylesheet">
+	<link rel="stylesheet" type="text/css" href="/styles/main.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<script type='text/javascript' src='autocomplete.js'></script>
 </head>
 <body>
-	<button id="sign_in" onclick="location.href='log-off'">Log Out</button>
-	<div class="header">
-		<h1>Seek</h1>
+	<div id="results-header">
+		<a href="http://localhost:8080"><img src="http://www.logobook.com/wp-content/uploads/2018/01/IMEVISION_Instituto_Mexicano_de_la_Television_logo.svg" id = "results-logo"></a>
+		<form id="results-search-form" action="/search" method="GET">
+			<input type="search" id="results-search-bar" value="{{p1}}" name="keywords" autocomplete="off">
+			<div id="results-autocomplete"></div>
+			<button type="submit" id="results-search-button"><i class="fas fa-search"></i></button>
+		</form>
+		<button id="log-in" onclick="location.href='log-off'"><i class="fas fa-user-circle"></i></button>
+		<div id="user_info">
+			<img src="{{!Photo}}">
+			<h6>{{!Name}}</h6>
+			<h6>{{!Email}}</h6>
+			<button id="log-in" onclick="location.href='log-off'"><i class="fas fa-user-circle"></i></button>
+		</div>
 	</div>
-	<form class="form" action="/" method="POST">
-		<input type="search" placeholder="Seek & You Shall Find" class="form-control" id="searchQuery" name="keywords">
-	</form>
-
-	 <div style="float:left" align="left">
-      <h4 style="text-align:center" data-toggle="toggle" data-placement="left" title="Search Results"> Results</h4>
-      <div class=scroll>
-        {{!ResultsTable}}
-      </div>
-    </div>
-    <div style="float:right">
-      <h4 style="text-align:center" data-toggle="toggle" data-placement="left" title="Top 20 Keywords"> History</h4>
-      <div class=scroll>
-        {{!HistoryTable}}
-      </div>
-    </div>
-	{{!Email}}
+	<hr id="separator">
+	<div id="results">
+		<h1 id = "num-results"> Search Results: {{!numResults}} </h1>
+		<div id="loop">
+			{{!results}}
+		</div>
+	</div>
+	<div id="results-footer">
+		<nav aria-label="Page navigation example" id="nav" >
+		  <ul class="pagination">
+		    <li id = "prev-page"">
+		      <a class="page-link" href="javascript:void(0)" aria-label="Previous">
+		        <span aria-hidden="true">&laquo;</span>
+		      </a>
+		    </li>
+		  </ul>
+		</nav>
+		<script src="pagination.js"></script>
+		<h6 id="results-mode"> Signed in <span style="font-weight: 700">{{!Name}}</span></h6>
+	</div>
+	<script >
+		autocomplete(document.getElementById("results-search-bar"), document.getElementById("results-autocomplete"));
+	</script>
 </body>
 </html>

@@ -31,6 +31,7 @@ for word_id in inverted_index:
     rdb.set('inverted_index:' + str(word_id), str(list(inverted_index[word_id])).strip('[]'))
 for word in resolved_inverted_index:
     rdb.set('resolved_inverted_index:' + str(word), str(list(resolved_inverted_index[word])).strip('[]'))
+    rdb.set('num_urls:' + str(len(resolved_inverted_index[word])))
 for doc_id in document_index:
     doc = document_index[doc_id]
     rdb.set('url:' + str(doc_id), doc[0])
