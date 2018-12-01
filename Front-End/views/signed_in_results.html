@@ -17,12 +17,14 @@
 			<div id="results-autocomplete"></div>
 			<button type="submit" id="results-search-button"><i class="fas fa-search"></i></button>
 		</form>
-		<button id="log-in" onclick="location.href='log-off'"><i class="fas fa-user-circle"></i></button>
+		<button id="toggle_button">
+			<img onclick="toggle_info()" id="user_photo" src="{{!Photo}}">
+		</button>
 		<div id="user_info">
-			<img src="{{!Photo}}">
-			<h6>{{!Name}}</h6>
-			<h6>{{!Email}}</h6>
-			<button id="log-in" onclick="location.href='log-off'"><i class="fas fa-user-circle"></i></button>
+			<h6 id="user_name">{{!Name}}</h6>
+			<h6 id="user_email">{{!Email}}</h6>
+			<hr>
+			<button id="log-out" onclick="location.href='log-off'">Log Out</button>
 		</div>
 	</div>
 	<hr id="separator">
