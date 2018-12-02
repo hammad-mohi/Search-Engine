@@ -1,14 +1,16 @@
+import json
 import bottle
 import httplib2
-import json
+from search import *
+from fuzzywuzzy import process
 from collections import defaultdict
 from apiclient.discovery import build
 from googleapiclient.errors import HttpError
 from beaker.middleware import SessionMiddleware
-from bottle import route, run, get, post, request, static_file, template, error
 from oauth2client.client import flow_from_clientsecrets, OAuth2WebServerFlow
-from search import *
-from fuzzywuzzy import fuzz, process
+from bottle import route, run, get, post, request, static_file, template, error
+
+
 
 # Constants
 HOME = "http://localhost:8080/"
@@ -29,6 +31,7 @@ app_middleware = SessionMiddleware(bottle.app(), session_opts)
 
 # Global dictionary used to store history tables for every user
 searchHistory = {}
+wordList = json.dumps(getWordList())
 
 # Retrieve beaker session before every route
 @bottle.hook('before_request')
@@ -61,11 +64,14 @@ def png(filename):
 @error(404)
 @error(500)
 def error404(error):
-    return template('./views/error.html', Error_Message="Oops something went wrong", Redirect = "", root='./')
+    return template('./views/error.html',
+                    Error_Message = "Oops something went wrong",
+                    Redirect = "",
+                    root='./')
 
 # Display main search engine page without showing any tables by default
 @route('/')
-def hello():
+def home():
     # Check if user is logged in
     if "logged_in" in request.session and request.session["logged_in"] is True:
         userID = request.session["id"]
@@ -73,29 +79,31 @@ def hello():
         userName = request.session["name"]
         userPhoto = request.session["photo"]
         print ("You are logged in")
-        print(userID)
         userHistory = ""
         # Search for user history in searchHistory hash table
             # Create history hash map for user if it does not exist
         if userID not in searchHistory:
                 searchHistory[userID] = {}
         else:
-            # Generate user history table code
-            userHistory = create_history_table(searchHistory[userID])
-        return template('./views/signed_in.html', HistoryTable = userHistory, ResultsTable = "", Email= userEmail, Name = userName, Photo = userPhoto, root ='./')
+            return template('./views/signed_in.html',
+                            Email= userEmail,
+                            Name = userName,
+                            Photo = userPhoto,
+                            wordList = wordList,
+                            root ='./')
+
     print("You are not logged in")
-    listw = json.dumps(getWordList())
-    return template('./views/anonymous.html', wordList=listw, root='./')
+    return template('./views/anonymous.html',
+                    wordList = wordList,
+                    root='./')   
 
 # Function that gets called when a user hits Submit button
 @route('/search', method="GET")
-def count_words():
+def search():
     # Get input string from input field and conver to lower case
     keywords = request.query.keywords
     inputString = keywords.lower()
-
-    # Local dictionary used to store keywords from current search
-    worddict = {}
+    inputWords = inputString.split()
 
     if "id" in request.session:
         userID = request.session["id"]
@@ -105,53 +113,60 @@ def count_words():
         print(userEmail)
         print(request.session["logged_in"])
 
-    '''
-        Go through every word in the input string and check if it exists
-        in the global searchHistory for the logged-in user dictionary and
-        the local search keywords dictionary. If word exits, increment word count.
-    '''
-    inputWords = inputString.split()
     if(len(inputWords) > 0):
         search_results = get_combined_results(inputWords)
         resultsLen = len(search_results)
     else:
-        return template('./views/error.html', Error_Message="No results found for entered keyword", Redirect = "", root='./')
+        return template('./views/error.html',
+                        Error_Message = "No results found.",
+                        Redirect = "",
+                        root='./')
 
     if (resultsLen == 0):
         math_expression_result = check_math_expression(keywords)
         if(math_expression_result != ""):
-                return template('./views/anonymous_results.html', ResultsTable="", p1=keywords, results=math_expression_result, numResults = 0)
+                return template('./views/anonymous_results.html',
+                                p1=keywords,
+                                results = math_expression_result,
+                                numResults = 1,
+                                wordList = wordList)
         else:
             redirect = guessInput(inputWords)
-            return template('./views/error.html', Error_Message="No results found for " + inputString + " .", Redirect = redirect, root='./')
+            return template('./views/error.html',
+                            Error_Message = "No results found for " + inputString + " .",
+                            Redirect = redirect,
+                            root='./')
 
     result_elements = create_result_elements(search_results)
-    for word in inputWords:
-        if word in worddict:
-            worddict[word] += 1
+    # If user is logged in, update user history
+    if "logged_in" in request.session and request.session["logged_in"] is True:
+        if inputString in searchHistory[userID]:
+            searchHistory[userID][inputString] += 1
         else:
-            worddict[word] = 1
-        # If user is logged in, update user history
-        if "logged_in" in request.session and request.session["logged_in"] is True:
-            if word in searchHistory[userID]:
-                searchHistory[userID][word] += 1
-            else:
-                searchHistory[userID][word] = 1
-    # Generate search results html table
-    table = create_results_table(worddict)
-
+            searchHistory[userID][inputString] = 1
+        print searchHistory[userID]
     # If user is logged in, create user history html table and return logged-in template
     if "logged_in" in request.session and request.session["logged_in"] is True:
-        userHistoryTable = create_history_table(searchHistory[userID])
-        return template('./views/signed_in_results.html', ResultsTable=table, HistoryTable = userHistoryTable, Email = userEmail, Name = userName, Photo = userPhoto, p1=keywords, results=result_elements, numResults = resultsLen)
+        return template('./views/signed_in_results.html',
+                        Email = userEmail,
+                        Name = userName,
+                        Photo = userPhoto,
+                        p1=keywords,
+                        results=result_elements,
+                        numResults = resultsLen,
+                        wordList = wordList)
     # If user is not logged in, return anonymous mode view
-    listw = json.dumps(getWordList())
-    return template('./views/anonymous_results.html', ResultsTable=table, p1=keywords, results=result_elements, numResults = resultsLen, wordList=listw)
+    return template('./views/anonymous_results.html',
+                    p1 = keywords,
+                    results = result_elements,
+                    numResults = resultsLen,
+                    wordList= wordList)
 
 # Web app goes to this route when user clicks on "sign-in"
 @route('/sign-in')
-def home():
-    flow = flow_from_clientsecrets("client_secrets.json", scope=SCOPE,
+def login():
+    flow = flow_from_clientsecrets("client_secrets.json",
+                                    scope=SCOPE,
                                     redirect_uri=REDIRECT)
     uri = flow.step1_get_authorize_url()
     bottle.redirect(str(uri))
@@ -161,7 +176,7 @@ def logoff():
     request.session["logged_in"] = False
     print("logout")
     request.session.delete()
-    bottle.redirect("https://www.google.com/accounts/Logout?continue=https://appengine.google.com/_ah/logout?continue=" + HOME)
+    bottle.redirect(HOME)
 
 # Google redirects user to this route
 @route('/redirect')
@@ -187,7 +202,7 @@ def redirect_page():
         userName = ""
     userPhoto = user_document["picture"]
 
-    # Store id, logged_in value and email in beaker session
+    # Store id, email, name, photo and logged_in value in beaker session
     request.session["id"] = user_document["id"]
     request.session["logged_in"] = True
     request.session["email"] = userEmail
@@ -195,44 +210,8 @@ def redirect_page():
     request.session["photo"] = userPhoto
 
     userID = request.session["id"]
-
     request.session.save()
     bottle.redirect(HOME)
 
-# Function used to generate HTML results table NOT CURRENLTY IN USE
-def create_results_table(word_dict):
-    table = '\t<table class="table table-bordered" id="results">\n'
-    top_words_sorted = sorted(word_dict, key=word_dict.get, reverse=True)
-    for word in top_words_sorted:
-        table+="\t<tr>\n"
-        table+="\t<td>" + word + "</td>\n"
-        table+="\t<td>" + str(word_dict[word]) + "</td>\n"
-        table+="\t</tr>\n"
-    table += "\t</table>"
-    return table
-
-# Function usedd to generate HTML search history table NOT CURRENLTY IN USE
-def create_history_table(top_words):
-    table = '\t<table class="table table-bordered" id="history">\n'
-    top_words_sorted = sorted(top_words, key=top_words.get, reverse=True)
-    for word in top_words_sorted[:10]:
-        table+="\t<tr>\n"
-        table+="\t<td>" + word + "</td>\n"
-        table+="\t<td>" + str(top_words[word]) + "</td>\n"
-        table+="\t</tr>\n"
-    table += "\t</table>"
-    return table
-
-def create_result_elements(search_results):
-    results = ""
-    for docs in search_results:
-        # if (len(item) == 4):
-        results += "<div class='blurred-box'>"
-        results += "    <a class='result-title' href='"+ docs[0] + "'>" + docs[1] + "</a>"
-        results += "    <p class='result-link'>" + docs[0] + "</p>"
-        results += "    <hr class='result-separator'>"
-        results += "    <p class='result-desc'>" + docs[2] + "</p>"
-        results += "</div>"
-    return results
 
 run(app=app_middleware, host='0.0.0.0', port=8080, debug=True, reoloader = True)

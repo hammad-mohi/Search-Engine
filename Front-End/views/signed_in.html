@@ -34,7 +34,9 @@
 	<div id="footer">
 	</div>	
 	<script >
-		autocomplete(document.getElementById("search-bar"), document.getElementById("autocomplete"));
+		var listString = ({{!wordList}});
+		var list = listString.split(",");
+		autocomplete(document.getElementById("search-bar"), document.getElementById("autocomplete"), list);
 		function toggle_info() {
 			console.log("Hello");
 			var x = document.getElementById("user_info");
