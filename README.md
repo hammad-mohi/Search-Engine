@@ -1,6 +1,6 @@
-#Seek Search Engine
+# Seek - Web Search Engine
 
-This document describes the implementation of a Search-Engine developed by
+This document describes the implementation of a Web Search Engine developed by
 Hammad Mohiuddin and Deep Pandya. 
 
 Instructions for running back-end:
@@ -18,5 +18,4 @@ Front-end benchmarking results:
 Bonus Features:
    - CSS animations
    - Dynamic JavaScript Pagination
-   - Search results also show descriptions and titles 
- 
+   - Search results also show descriptions and titles
